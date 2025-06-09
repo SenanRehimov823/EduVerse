@@ -1,3 +1,5 @@
+
+
 import Class from "../model/class.js";
 import User from "../model/user.js";
 
@@ -15,68 +17,67 @@ export const createClass = async (req, res) => {
       sector,
       section: section || null,
     });
-await newClass.populate("teacher", "name");
-    await newClass.save();
 
+    await newClass.save();
     res.status(201).json({ message: "Sinif yaradıldı", class: newClass });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası"});
+    res.status(500).json({ message: "Server xətası" });
   }
 };
 
+const parseClassName = (className) => {
+  const grade = parseInt(className);
+  const section = className.replace(/[0-9]/g, "") || null;
+  return { grade, section };
+};
 
 
 export const assignTeacherToClass = async (req, res) => {
   try {
-    const { classId, teacherId } = req.body;
+    const { className, teacherName } = req.body;
+    const { grade, section } = parseClassName(className);
 
-    const teacher = await User.findById(teacherId);
-    if (!teacher || teacher.role !== "teacher") {
-      return res.status(400).json({ message: "Etibarsız müəllim" });
-    }
+    const foundClass = await Class.findOne({ grade, section });
+    if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
-    const updatedClass = await Class.findByIdAndUpdate(
-      classId,
-      { teacher: teacherId },
-      { new: true }
-    ).populate("teacher", "name"); 
+    const teacher = await User.findOne({ name: teacherName, role: "teacher" });
+    if (!teacher) return res.status(404).json({ message: "Müəllim tapılmadı" });
 
-    res.status(200).json({
-      message: "Müəllim sinifə təyin olundu",
-      class: updatedClass,
-    });
+    foundClass.teacher = teacher._id;
+    await foundClass.save();
+    await foundClass.populate("teacher", "name");
+
+    res.status(200).json({ message: "Müəllim sinifə təyin olundu", class: foundClass });
   } catch (error) {
     res.status(500).json({ message: "Server xətası" });
   }
 };
-
 
 
 export const assignStudentToClass = async (req, res) => {
   try {
-    const { classId, studentId } = req.body;
+    const { className, studentName } = req.body;
+    const { grade, section } = parseClassName(className);
 
-    const classObj = await Class.findById(classId);
-    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+    const foundClass = await Class.findOne({ grade, section });
+    if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
-    const student = await User.findById(studentId);
-    if (!student || student.role !== "student") {
-      return res.status(400).json({ message: "Şagird tapılmadı və ya rol düzgün deyil" });
-    }
+    const student = await User.findOne({ name: studentName, role: "student" });
+    if (!student) return res.status(404).json({ message: "Şagird tapılmadı" });
 
-    
-    if (classObj.students.includes(studentId)) {
+    if (foundClass.students.includes(student._id)) {
       return res.status(400).json({ message: "Şagird artıq bu sinifdədir" });
     }
 
-    classObj.students.push(studentId);
-    await classObj.save();
-
-    res.status(200).json({ message: "Şagird sinifə əlavə olundu", class: classObj });
+    foundClass.students.push(student._id);
+    await foundClass.save();
+await foundClass.populate("students", "name");
+    res.status(200).json({ message: "Şagird sinifə əlavə olundu", class: foundClass });
   } catch (error) {
     res.status(500).json({ message: "Server xətası" });
   }
 };
+
 
 export const getAllClasses = async (req, res) => {
   try {
@@ -84,7 +85,6 @@ export const getAllClasses = async (req, res) => {
       .populate("teacher", "name")
       .populate("students", "name");
 
-   
     const classesWithCount = classes.map(cls => ({
       ...cls.toObject(),
       studentCount: cls.students.length,
@@ -97,9 +97,13 @@ export const getAllClasses = async (req, res) => {
 };
 export const removeTeacherFromClass = async (req, res) => {
   try {
-    const { classId } = req.params;
+    const { className } = req.params;
 
-    const foundClass = await Class.findById(classId);
+    const [gradeSection, sector] = className.split("-");
+    const grade = parseInt(gradeSection);
+    const section = gradeSection.replace(/[0-9]/g, "");
+
+    const foundClass = await Class.findOne({ grade, section, sector });
     if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
     foundClass.teacher = undefined;
@@ -107,17 +111,21 @@ export const removeTeacherFromClass = async (req, res) => {
 
     res.status(200).json({ message: "Müəllim sinifdən silindi", class: foundClass });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası"});
+    res.status(500).json({ message: "Server xətası" });
   }
 };
 export const deleteClass = async (req, res) => {
   try {
-    const { classId } = req.params;
+    const { className } = req.params;
 
-    const foundClass = await Class.findById(classId);
+    const [gradeSection, sector] = className.split("-");
+    const grade = parseInt(gradeSection);
+    const section = gradeSection.replace(/[0-9]/g, "");
+
+    const foundClass = await Class.findOne({ grade, section, sector });
     if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
-    await Class.findByIdAndDelete(classId);
+    await Class.findByIdAndDelete(foundClass._id);
     res.status(200).json({ message: "Sinif uğurla silindi" });
   } catch (error) {
     res.status(500).json({ message: "Server xətası" });
@@ -125,21 +133,36 @@ export const deleteClass = async (req, res) => {
 };
 export const assignMultipleStudentsToClass = async (req, res) => {
   try {
-    const { classId, studentIds } = req.body;
+    const { className, studentNames } = req.body; // studentNames: ["Elvin Tələbə", "Zaur Valideyn"]
 
-    const foundClass = await Class.findById(classId);
+    const [gradeStr, section] = className.match(/^(\d+)([A-Z]*)$/).slice(1);
+    const grade = parseInt(gradeStr);
+
+    const foundClass = await Class.findOne({ grade, section });
     if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
-    const uniqueIds = studentIds.filter(id => !foundClass.students.includes(id));
-    foundClass.students.push(...uniqueIds);
-    await foundClass.save();
+    const addedStudents = [];
 
-    
+    for (const name of studentNames) {
+      const student = await User.findOne({ name, role: "student" });
+      if (!student) continue;
+
+      if (!foundClass.students.includes(student._id)) {
+        foundClass.students.push(student._id);
+        addedStudents.push(student.name);
+      }
+    }
+
+    await foundClass.save();
     await foundClass.populate("students", "name");
     await foundClass.populate("teacher", "name");
 
-    res.status(200).json({ message: "Şagirdlər sinifə əlavə olundu", class: foundClass });
+    res.status(200).json({
+      message: "Şagirdlər sinifə əlavə olundu",
+      addedStudents,
+      class: foundClass,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası" });
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };

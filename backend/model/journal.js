@@ -12,7 +12,7 @@ const journalSchema = new mongoose.Schema({
   },
   topic: {
     type: String,
-    required: true,
+    default: ""
   },
   date: {
     type: Date,
@@ -30,11 +30,10 @@ const journalSchema = new mongoose.Schema({
         ref: "User",
         required: true,
       },
-      attendance: {
-        type: String,
-        enum: ["etdi", "etmədi"],
-        default: "etdi",
-      },
+    attendance: {
+  type: String,
+  enum: ["etdi", "etmədi"]
+},
       summatives: [
         {
           score: Number,

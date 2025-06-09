@@ -1,7 +1,7 @@
+// journalController.js
 import Journal from "../model/journal.js";
 import Class from "../model/class.js";
 import User from "../model/user.js";
-
 
 const getGradeFromScore = (score) => {
   if (score >= 91) return 5;
@@ -12,61 +12,14 @@ const getGradeFromScore = (score) => {
   return 1;
 };
 
-
-export const createJournal = async (req, res) => {
-  try {
-    const { date, classId, subject, topic } = req.body;
-    const teacherId = req.user.id;
-
-    const foundClass = await Class.findById(classId).populate("students", "_id name");
-    if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
-
-    const studentRecords = foundClass.students.map((student) => ({
-      student: student._id,
-      attendance: "etdi",
-      summatives: [],
-      bsq: null,
-      midtermAverage: null,
-      midtermGrade: null,
-      finalScore: null,
-      finalGrade: null,
-      quiz: null,
-      homework: ""
-    }));
-
-    const journal = await Journal.create({
-      classId,
-      teacher: teacherId,
-      subject,
-      topic,
-      date,
-      records: studentRecords
-    });
-
-    await journal.populate([
-      { path: "teacher", select: "name" },
-      { path: "records.student", select: "name" }
-    ]);
-
-    res.status(201).json({ message: "Jurnal yaradıldı", journal });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server xətası" });
-  }
-};
-
 export const markAttendance = async (req, res) => {
   try {
-    const { journalId, studentId, status } = req.body;
-
-    if (!["etdi", "etmədi"].includes(status)) {
-      return res.status(400).json({ message: "Düzgün iştirak statusu deyil" });
-    }
+    const { journalId, studentName, status } = req.body;
 
     const journal = await Journal.findById(journalId).populate("records.student", "name");
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const record = journal.records.find(r => r.student._id.toString() === studentId);
+    const record = journal.records.find(r => r.student.name === studentName);
     if (!record) return res.status(404).json({ message: "Tələbə tapılmadı" });
 
     record.attendance = status;
@@ -74,14 +27,13 @@ export const markAttendance = async (req, res) => {
 
     res.status(200).json({ message: "İştirak yeniləndi", updatedRecord: record });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json({ message: "Server xətası" });
   }
 };
 
-
 export const addSummative = async (req, res) => {
   try {
-    const { journalId, studentId, score } = req.body;
+    const { journalId, studentName, score } = req.body;
 
     if (score < 0 || score > 100) {
       return res.status(400).json({ message: "Summativ 0-100 arası olmalıdır" });
@@ -90,11 +42,10 @@ export const addSummative = async (req, res) => {
     const journal = await Journal.findById(journalId).populate("records.student", "name");
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const record = journal.records.find(r => r.student._id.toString() === studentId);
+    const record = journal.records.find(r => r.student.name === studentName);
     if (!record) return res.status(404).json({ message: "Tələbə tapılmadı" });
 
     const grade = getGradeFromScore(score);
-    if (!record.summatives) record.summatives = [];
     record.summatives.push({ score, grade });
 
     const scores = record.summatives.map(s => s.score);
@@ -112,22 +63,21 @@ export const addSummative = async (req, res) => {
       midtermGrade: record.midtermGrade
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
 
-
 export const setBSQAndCalculateFinal = async (req, res) => {
   try {
-    const { journalId, scores } = req.body;
+    const { journalId, scores } = req.body; 
 
     const journal = await Journal.findById(journalId).populate("records.student", "name");
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
     const finalResults = [];
 
-    for (const { studentId, bsq } of scores) {
-      const record = journal.records.find(r => r.student._id.toString() === studentId);
+    for (const { studentName, bsq } of scores) {
+      const record = journal.records.find(r => r.student.name === studentName);
       if (!record || !record.midtermAverage) continue;
 
       record.bsq = {
@@ -155,26 +105,37 @@ export const setBSQAndCalculateFinal = async (req, res) => {
       results: finalResults
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
 
-
-export const getJournalById = async (req, res) => {
+export const getJournalBySubject = async (req, res) => {
   try {
-    const { id } = req.params;
-    const journal = await Journal.findById(id)
+    const { className, subject } = req.params;
+    const teacherId = req.user.id;
+
+    const grade = parseInt(className);
+    const section = className.replace(/[0-9]/g, "");
+    const classObj = await Class.findOne({ grade, section });
+    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+
+    const journal = await Journal.findOne({
+      classId: classObj._id,
+      subject,
+      teacher: teacherId
+    })
       .populate("teacher", "name")
       .populate("classId", "grade section sector")
       .populate("records.student", "name");
 
-    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+    if (!journal) return res.status(404).json({ message: "Bu fənn üçün jurnal tapılmadı" });
 
     res.status(200).json({ journal });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi" });
+    res.status(500).json({ message: "Xəta baş verdi"});
   }
 };
+
 export const getStudentJournals = async (req, res) => {
   try {
     const studentId = req.user.id;
@@ -185,7 +146,6 @@ export const getStudentJournals = async (req, res) => {
       .populate("classId", "grade section sector")
       .populate("records.student", "name");
 
-   
     const filtered = journals.map(journal => {
       const myRecord = journal.records.find(
         r => r.student._id.toString() === studentId
@@ -205,6 +165,54 @@ export const getStudentJournals = async (req, res) => {
 
     res.status(200).json({ journals: filtered });
   } catch (error) {
+    res.status(500).json({ message: "Server xətası" });
+  }
+};
+export const updateJournalTopic = async (req, res) => {
+  try {
+    const { journalId, topic, date } = req.body;
+
+    const journal = await Journal.findById(journalId);
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    if (topic) journal.topic = topic;
+    if (date) journal.date = date;
+
+    await journal.save();
+    res.status(200).json({ message: "Jurnal mövzusu yeniləndi", topic: journal.topic, date: journal.date });
+  } catch (error) {
     res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};export const getJournalByDate = async (req, res) => {
+  try {
+    const { date, className } = req.query;
+    const teacherId = req.user.id;
+
+    if (!date || !className) {
+      return res.status(400).json({ message: "Tarix və sinif adı tələb olunur" });
+    }
+
+    const [gradeSection, sector] = className.split("-");
+    const grade = parseInt(gradeSection);
+    const section = gradeSection.replace(/[0-9]/g, "");
+
+    const foundClass = await Class.findOne({ grade, section, sector });
+    if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
+
+    const journal = await Journal.findOne({
+      teacher: teacherId,
+      classId: foundClass._id,
+      date: { $gte: new Date(date), $lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000) }
+    })
+    .populate("records.student", "name")
+    .populate("teacher", "name")
+    .populate("classId", "grade section sector");
+
+    if (!journal) return res.status(404).json({ message: "Bu tarix üçün jurnal tapılmadı" });
+
+    res.status(200).json({ journal });
+  } catch (error) {
+    console.error("Journal by date error:", error);
+    res.status(500).json({ message: "Server xətası"});
   }
 };
