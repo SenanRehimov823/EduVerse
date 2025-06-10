@@ -7,6 +7,7 @@ import adminRouter from "./router/adminRouter.js";
 import classRouter from "./router/classRouter.js";
 import journalRouter from "./router/journalRouter.js"
 import lessonRouter from "./router/lessonRouter.js"
+import subjectRouter from "./router/subjectRouter.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -27,4 +28,5 @@ app.use("/api/admin", adminRouter);
 app.use("/api/class", classRouter);
 app.use("/api/journal",journalRouter);
 app.use("/api/lesson",lessonRouter);
+app.use("/api/subject", subjectRouter);
 app.listen(5000, () => console.log("Server işləyir"));

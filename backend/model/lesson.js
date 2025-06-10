@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 const lessonSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  subject: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subject",
     required: true,
   },
-  classId: {
+  class: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
     required: true,

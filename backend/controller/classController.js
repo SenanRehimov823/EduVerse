@@ -3,27 +3,59 @@
 import Class from "../model/class.js";
 import User from "../model/user.js";
 
-
 export const createClass = async (req, res) => {
   try {
-    const { grade, sector, section } = req.body;
+    const { name, headTeacherName, studentNames } = req.body;
 
-    if (!grade || !sector) {
-      return res.status(400).json({ message: "Grade və sector tələb olunur" });
+    if (!name || !headTeacherName || !Array.isArray(studentNames)) {
+      return res.status(400).json({ message: "Bütün xanaları doldurun" });
     }
+
+    const headTeacher = await User.findOne({ name: headTeacherName, role: "teacher" });
+    if (!headTeacher) {
+      return res.status(404).json({ message: "Rəhbər müəllim tapılmadı" });
+    }
+
+    
+    const grade = parseInt(name);
+    const section = name.replace(/[0-9]/g, "") || "";
+    const sector = ""; 
+
+    const existingClass = await Class.findOne({ grade, section, sector });
+    if (existingClass) {
+      return res.status(400).json({ message: "Bu adda sinif artıq mövcuddur" });
+    }
+
+    const students = await User.find({ name: { $in: studentNames }, role: "student" });
+    const studentIds = students.map(s => s._id);
 
     const newClass = new Class({
       grade,
+      section,
       sector,
-      section: section || null,
+      teacher: headTeacher._id,
+      students: studentIds,
     });
 
     await newClass.save();
-    res.status(201).json({ message: "Sinif yaradıldı", class: newClass });
+
+    await User.updateMany(
+      { _id: { $in: studentIds } },
+      { $set: { class: newClass._id } }
+    );
+
+    const uniqueNames = [...new Set(students.map(s => s.name))];
+
+res.status(201).json({
+  message: "Sinif yaradıldı və rəhbər + şagirdlər təyin olundu.",
+  addedStudents: uniqueNames,
+});
   } catch (error) {
-    res.status(500).json({ message: "Server xətası" });
+    res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
+
+
 
 const parseClassName = (className) => {
   const grade = parseInt(className);

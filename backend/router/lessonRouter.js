@@ -1,19 +1,15 @@
 import express from "express";
-import { authMiddleware } from "../middleware/authMiddleware.js";
-import { isTeacher } from "../middleware/isTeacher.js";
 import {
   createLessonWithJournal,
   getLessonsByTeacher,
-  getJournalsByClassForTeacher,
-  getAllLessonsInClassForSupervisor
+  getLessonsByClass
 } from "../controller/lessonController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-
-router.post("/create", authMiddleware, isTeacher, createLessonWithJournal);
-router.get("/my", authMiddleware, isTeacher, getLessonsByTeacher);
-router.get("/class/:className", authMiddleware, isTeacher, getJournalsByClassForTeacher);
-router.get("/supervisor/:className", authMiddleware, isTeacher, getAllLessonsInClassForSupervisor);
+router.post("/create", authMiddleware, createLessonWithJournal);
+router.get("/by-teacher", authMiddleware, getLessonsByTeacher);
+router.get("/by-class/:className", authMiddleware, getLessonsByClass);
 
 export default router;

@@ -1,5 +1,8 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
+import Class from "../model/class.js";
+import subject from "../model/subject.js";
+
 export const setUserRole = async (req, res) => {
   try {
     const { id } = req.params;
@@ -30,12 +33,18 @@ export const setUserRole = async (req, res) => {
     res.status(500).json({ message: "Server xətası" });
   }
 };
-export const getPendingUsers = async (req, res) => {
+export const getAllPendingStudentsWithClass = async (req, res) => {
   try {
-    const pendingUsers = await User.find({ role: "pending" }).select("-password");
-    res.status(200).json({ users: pendingUsers });
+    const students = await User.find({
+      role: "pending",
+      class: { $ne: null }
+    })
+      .populate("class", "name")
+      .select("name class");
+
+    res.status(200).json(students);
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
 export const deleteUser = async (req, res) => {
@@ -49,12 +58,16 @@ export const deleteUser = async (req, res) => {
 
     res.status(200).json({ message: "İstifadəçi silindi" });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json({ message: "Server xətası" });
   }
 };
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find()
+      .populate("subject", "name")  
+      .populate("class", "name")    
+      .select("-password");         
+
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
@@ -64,7 +77,7 @@ export const createUserByAdmin = async (req, res) => {
   try {
     const { name, email, password, role, image } = req.body;
 
-    
+
     const allowedRoles = ["teacher", "student"];
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({ message: "Yalnız teacher və ya student rolu ola bilər" });
@@ -102,7 +115,7 @@ export const createUserByAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası"});
+    res.status(500).json({ message: "Server xətası" });
   }
 };
 
@@ -121,6 +134,47 @@ export const setMultipleUserRoles = async (req, res) => {
     );
 
     res.status(200).json({ message: "Rollar uğurla yeniləndi" });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası" });
+  }
+};
+export const getTeachersWithSubjects = async (req, res) => {
+  try {
+    const teachers = await User.find({ role: "teacher" })
+      .populate("subject", "name")
+      .select("name email subject");
+
+    res.status(200).json(teachers);
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};
+export const getStudentsForClassAssignment = async (req, res) => {
+  try {
+    const { grade } = req.query;
+
+    if (!grade) {
+      return res.status(400).json({ message: "Grade tələb olunur" });
+    }
+
+    // Bütün eyni grade-də olan sinifləri tapırıq (məs: 8, 9 və s.)
+    const classesInGrade = await Class.find({ grade: parseInt(grade) });
+
+    if (!classesInGrade || classesInGrade.length === 0) {
+      return res.status(404).json({ message: "Bu grade üçün heç bir sinif tapılmadı" });
+    }
+
+    // Bu grade-də təyin olunmuş bütün şagirdlərin id-lərini çıxarırıq
+    const assignedStudentIds = classesInGrade.flatMap(cls => cls.students);
+
+    // Bu grade-də olub heç bir sinifə təyin olunmamış şagirdləri gətiririk
+    const students = await User.find({
+      role: "student",
+      class: { $in: classesInGrade.map(cls => cls._id) },
+      _id: { $nin: assignedStudentIds }
+    }).select("name");
+
+    res.status(200).json({ students });
   } catch (error) {
     res.status(500).json({ message: "Server xətası", error: error.message });
   }

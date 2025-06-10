@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
+  subject: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Subject",
+  default: null
+},
     image: {
       type: String,
       default: "",
@@ -27,6 +32,11 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "teacher", "parent", "admin", "pending"],
       default: "pending",
     },
+    class: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Class",
+  default: null
+},
     isVerified: {
       type: Boolean,
       default: false,

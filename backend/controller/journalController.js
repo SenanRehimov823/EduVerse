@@ -216,3 +216,70 @@ export const updateJournalTopic = async (req, res) => {
     res.status(500).json({ message: "Server xətası"});
   }
 };
+export const addHomeworkByTeacher = async (req, res) => {
+  try {
+    const { className, subject, homeworkText, date } = req.body;
+    const teacherId = req.user.id;
+
+    const grade = parseInt(className);
+    const section = className.replace(/[0-9]/g, "") || "";
+
+    const classObj = await Class.findOne({ grade, section });
+    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+
+    const journal = await Journal.findOne({
+      classId: classObj._id,
+      subject,
+      date: { $gte: new Date(date).setHours(0,0,0,0), $lt: new Date(date).setHours(23,59,59,999) },
+      teacher: teacherId
+    });
+
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    journal.records.forEach(rec => {
+      if (!rec.homework) rec.homework = {};
+      rec.homework.text = homeworkText;
+    });
+
+    await journal.save();
+
+    res.status(200).json({ message: "Tapşırıq uğurla əlavə edildi." });
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};
+export const submitHomeworkByStudent = async (req, res) => {
+  try {
+    const { className, subject, date, homeworkText } = req.body;
+    const file = req.file?.filename || "";
+    const studentId = req.user.id;
+
+    const grade = parseInt(className);
+    const section = className.replace(/[0-9]/g, "") || "";
+
+    const classObj = await Class.findOne({ grade, section });
+    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+
+    const journal = await Journal.findOne({
+      classId: classObj._id,
+      subject,
+      date: { $gte: new Date(date).setHours(0,0,0,0), $lt: new Date(date).setHours(23,59,59,999) }
+    });
+
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    const record = journal.records.find(r => r.student.toString() === studentId);
+    if (!record) return res.status(404).json({ message: "Şagird üçün qeyd tapılmadı" });
+
+    record.homework = {
+      text: homeworkText || "",
+      file: file ? `/uploads/${file}` : ""
+    };
+
+    await journal.save();
+
+    res.status(200).json({ message: "Tapşırıq uğurla göndərildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};

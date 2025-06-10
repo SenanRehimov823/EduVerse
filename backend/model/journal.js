@@ -49,8 +49,8 @@ const journalSchema = new mongoose.Schema({
       finalScore: Number,
       finalGrade: Number,
       homework: {
-        type: String,
-        default: ""
+       text: { type: String, default: "" },
+      file: { type: String, default: "" } 
       }
     }
   ]

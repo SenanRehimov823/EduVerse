@@ -2,7 +2,8 @@ import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-
+import Subject from "../model/subject.js";
+import Class from "../model/class.js";
 
 // const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -46,7 +47,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       image: image || "",
       role: "pending",
-      isVerified: true, // OTP istənmədiyindən birbaşa təsdiqlənmiş kimi qeyd olunur
+      isVerified: true,
     });
 
     await user.save();
@@ -175,9 +176,88 @@ export const deleteAccount = async (req, res) => {
 
     await User.findByIdAndDelete(userId);
 
-    res.clearCookie("token"); // Tokeni silirik
+    res.clearCookie("token"); 
     res.status(200).json({ message: "Hesab silindi" });
   } catch (error) {
     res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};
+export const registerStudent = async (req, res) => {
+  try {
+    const { name, email, password, grade } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Bu email artıq istifadə olunur" });
+    }
+
+    
+    let classDoc = await Class.findOne({ name: grade.toString() });
+
+    if (!classDoc) {
+      classDoc = new Class({
+        name: grade.toString(),
+        grade: parseInt(grade),
+        section: "",
+        sector: "",
+        students: [] 
+      });
+      await classDoc.save();
+    }
+
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      class: classDoc._id, 
+      role: "pending"
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "Şagird qeydiyyatdan keçdi, admin təsdiqləməlidir." });
+  } catch (err) {
+    res.status(500).json({ message: "Xəta baş verdi", error: err.message });
+  }
+};
+export const registerTeacher = async (req, res) => {
+  try {
+    const { name, email, password, subjectName } = req.body;
+
+    if (!name || !email || !password || !subjectName) {
+      return res.status(400).json({ message: "Bütün xanaları doldurun" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Bu email artıq istifadə olunur" });
+    }
+
+    let subject = await Subject.findOne({ name: new RegExp(`^${subjectName}$`, 'i') });
+
+    
+    if (!subject) {
+      subject = await Subject.create({ name: subjectName });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      subject: subject._id, 
+      role: "pending", 
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "Müəllim qeydiyyatdan keçdi, admin təsdiqləməlidir." });
+  } catch (err) {
+    res.status(500).json({ message: "Xəta baş verdi", error: err.message });
   }
 };

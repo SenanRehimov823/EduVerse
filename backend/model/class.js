@@ -7,7 +7,7 @@ const classSchema = new mongoose.Schema({
   },
   sector: {
     type: String,
-    required: true, 
+    required: false, 
   },
   section: {
     type: String,
