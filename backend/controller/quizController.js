@@ -3,7 +3,7 @@ import Class from "../model/class.js";
 
 export const createQuiz = async (req, res) => {
   try {
-    const { title, className, subject, questions } = req.body;
+    const { title, className, subject, questions, deadline } = req.body;
     const teacherId = req.user.id;
 
     const grade = parseInt(className);
@@ -17,7 +17,8 @@ export const createQuiz = async (req, res) => {
       classId: classObj._id,
       subject,
       teacher: teacherId,
-      questions
+      questions,
+      deadline
     });
 
     res.status(201).json({ message: "Quiz yaradıldı", quiz });
@@ -32,11 +33,11 @@ export const getQuizzesByTeacher = async (req, res) => {
 
     const quizzes = await Quiz.find({ teacher: teacherId })
       .populate("classId", "grade section")
-      .select("-questions.correctAnswer"); // cavablar şagirdlərə göstərilməsin
+      .select("-questions.correctAnswers");
 
     res.status(200).json({ quizzes });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası" });
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
 
@@ -51,6 +52,21 @@ export const deleteQuiz = async (req, res) => {
     await Quiz.findByIdAndDelete(id);
     res.status(200).json({ message: "Quiz silindi" });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası" });
+    res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};
+
+export const getAvailableQuizzesForStudent = async (req, res) => {
+  try {
+    const studentClassId = req.user.class;
+    if (!studentClassId) return res.status(400).json({ message: "Sinif məlumatı yoxdur" });
+
+    const quizzes = await Quiz.find({ classId: studentClassId })
+      .populate("teacher", "name")
+      .select("title subject questions deadline");
+
+    res.status(200).json({ quizzes });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };

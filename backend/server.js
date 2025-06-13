@@ -8,6 +8,8 @@ import classRouter from "./router/classRouter.js";
 import journalRouter from "./router/journalRouter.js"
 import lessonRouter from "./router/lessonRouter.js"
 import subjectRouter from "./router/subjectRouter.js";
+import quizRouter from "./router/quizRouter.js";
+import quizResultRouter from "./router/quizResultRouter.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -19,14 +21,13 @@ app.use(cors({
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());
-
 connectDb();
-
-
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/class", classRouter);
 app.use("/api/journal",journalRouter);
 app.use("/api/lesson",lessonRouter);
 app.use("/api/subject", subjectRouter);
+app.use("/api/quiz", quizRouter);
+app.use("/api/quiz-result", quizResultRouter);
 app.listen(5000, () => console.log("Server işləyir"));

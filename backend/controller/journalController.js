@@ -1,4 +1,4 @@
-// journalController.js
+
 import Journal from "../model/journal.js";
 import Class from "../model/class.js";
 import User from "../model/user.js";
@@ -279,6 +279,55 @@ export const submitHomeworkByStudent = async (req, res) => {
     await journal.save();
 
     res.status(200).json({ message: "Tapşırıq uğurla göndərildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};
+export const gradeHomework = async (req, res) => {
+  try {
+    const teacherId = req.user.id;
+    const { className, subject, studentName, grade } = req.body;
+
+    const gradeNum = parseInt(className);
+    const section = className.replace(/[0-9]/g, "") || "";
+
+    const classObj = await Class.findOne({ grade: gradeNum, section });
+    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+
+    const student = await User.findOne({ name: studentName, role: "student" });
+    if (!student) return res.status(404).json({ message: "Şagird tapılmadı" });
+
+    const journal = await Journal.findOne({
+      classId: classObj._id,
+      subject,
+      teacher: teacherId
+    });
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    const record = journal.records.find(r => r.student.toString() === student._id.toString());
+    if (!record) return res.status(404).json({ message: "Şagird jurnalda tapılmadı" });
+
+    record.homework.grade = grade;
+    await journal.save();
+
+    res.status(200).json({ message: "Tapşırığa qiymət verildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};
+export const updateJournal = async (req, res) => {
+  try {
+    const { journalId } = req.params;
+    const { topic, records } = req.body;
+
+    const journal = await Journal.findById(journalId);
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    journal.topic = topic || journal.topic;
+    journal.records = records; 
+    await journal.save();
+
+    res.status(200).json({ message: "Jurnal uğurla yeniləndi", journal });
   } catch (error) {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }

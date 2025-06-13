@@ -50,7 +50,8 @@ const journalSchema = new mongoose.Schema({
       finalGrade: Number,
       homework: {
        text: { type: String, default: "" },
-      file: { type: String, default: "" } 
+      file: { type: String, default: "" } ,
+       grade: { type: Number, default: null }
       }
     }
   ]
