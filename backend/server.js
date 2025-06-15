@@ -12,6 +12,7 @@ import quizRouter from "./router/quizRouter.js";
 import quizResultRouter from "./router/quizResultRouter.js";
 import studentRouter from "./router/studentRouter.js"
 import dotenv from "dotenv";
+import chatRouter from "./router/chatRouter.js";
 dotenv.config();
 
 const app = express();
@@ -32,4 +33,5 @@ app.use("/api/subject", subjectRouter);
 app.use("/api/quiz", quizRouter);
 app.use("/api/quiz-result", quizResultRouter);
 app.use("/api/student", studentRouter)
+app.use("/chat", chatRouter);
 app.listen(5000, () => console.log("Server işləyir"));
