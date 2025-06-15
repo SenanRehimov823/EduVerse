@@ -29,6 +29,5 @@ router.get("/by-date", authMiddleware, isAdminOrTeacher, getJournalByDate);
 router.put("/update/:journalId", authMiddleware, isTeacher, updateJournal);
 router.patch("/homework", authMiddleware, isTeacher, addHomeworkByTeacher);
 router.patch("/homework-submit", authMiddleware, isStudent, upload.single("file"), submitHomeworkByStudent);
-
 router.post("/homework/grade", authMiddleware, isTeacher, gradeHomework);
 export default router;

@@ -10,6 +10,7 @@ import lessonRouter from "./router/lessonRouter.js"
 import subjectRouter from "./router/subjectRouter.js";
 import quizRouter from "./router/quizRouter.js";
 import quizResultRouter from "./router/quizResultRouter.js";
+import studentRouter from "./router/studentRouter.js"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -30,4 +31,5 @@ app.use("/api/lesson",lessonRouter);
 app.use("/api/subject", subjectRouter);
 app.use("/api/quiz", quizRouter);
 app.use("/api/quiz-result", quizResultRouter);
+app.use("/api/student", studentRouter)
 app.listen(5000, () => console.log("Server işləyir"));
