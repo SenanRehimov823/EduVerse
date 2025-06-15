@@ -20,30 +20,32 @@ export const submitQuiz = async (req, res) => {
     if (existing) return res.status(400).json({ message: "Artıq təqdim etmisiniz" });
 
     let score = 0;
-    quiz.questions.forEach((q, idx) => {
-      const submitted = answers.find(a => a.questionIndex === idx);
-      if (submitted) {
-        const correct = q.correctAnswers.sort().join();
-        const selected = submitted.selectedOptions.sort().join();
-        if (correct === selected) score++;
-      }
+    const answerMapping = quiz.questions.map((q, idx) => {
+      const userAnswer = answers.find(a => a.questionIndex === idx);
+      const selected = userAnswer ? userAnswer.selectedOptions : [];
+      
+      const correct = JSON.stringify(selected.sort()) === JSON.stringify(q.correctAnswers.sort());
+      if (correct) score += 1;
+      return {
+        question: q.question,
+        questionIndex: idx, 
+        selectedOptions: selected
+      };
     });
 
-    const result = new QuizResult({
+    const result = await QuizResult.create({
       quiz: quizId,
       student: studentId,
-      answers,
+      answers: answerMapping,
       score,
-      autoSubmitted: false
+      startTime: Date.now()
     });
 
-    await result.save();
-    res.status(201).json({ message: "Quiz uğurla təqdim edildi", score });
-  } catch (err) {
-    res.status(500).json({ message: "Server xətası", error: err.message });
+    res.status(201).json({ message: "Quiz təqdim edildi", result });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
-
 export const getResultsByQuizIdForTeacher = async (req, res) => {
   try {
     const { quizId } = req.params;

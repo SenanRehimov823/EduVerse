@@ -69,9 +69,9 @@ export const addSummative = async (req, res) => {
 
 export const setBSQAndCalculateFinal = async (req, res) => {
   try {
-    const { journalId, scores } = req.body; 
+    const { journalId, scores } = req.body;
+    const journal = await Journal.findById(journalId).populate("records.student", "name"); // <-- DÜZƏLİŞ
 
-    const journal = await Journal.findById(journalId).populate("records.student", "name");
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
     const finalResults = [];
@@ -105,7 +105,7 @@ export const setBSQAndCalculateFinal = async (req, res) => {
       results: finalResults
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi" });
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
 
