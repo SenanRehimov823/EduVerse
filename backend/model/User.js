@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+      grade: { type: String, default: "" }, 
   },
   { timestamps: true }
 );

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import Subject from "../model/subject.js";
 import Class from "../model/class.js";
-
+import { createUser } from "../utils/createUser.js";
 // const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // const transporter = nodemailer.createTransport({
@@ -91,14 +91,14 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Email və ya şifrə yanlışdır" });
-
-    // if (!user.isVerified) {
-    //   return res.status(403).json({ message: "Email təsdiqlənməyib" });
-    // }
+    if (!user) {
+      return res.status(400).json({ message: "Email və ya şifrə yanlışdır" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Email və ya şifrə yanlışdır" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Email və ya şifrə yanlışdır" });
+    }
 
     const token = jwt.sign(
       { id: user._id, role: user.role, email: user.email },
@@ -114,19 +114,23 @@ export const login = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Giriş uğurludur",
+      message: user.role === "pending"
+        ? "Giriş uğurludur, amma admin təsdiqləməyib"
+        : "Giriş uğurludur",
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         image: user.image,
+        isVerified: user.isVerified,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi" });
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
 
 export const logout = (req, res) => {
   res.clearCookie("token");
@@ -151,13 +155,13 @@ export const changePassword = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Köhnə şifrə yanlışdır" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Köhnə şifrə yanlışdır" });
 
-    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*]/.test(newPassword))
       return res.status(400).json({
-        message: "Yeni şifrə minimum 8 simvol, 1 böyük hərf və 1 rəqəm içərməlidir",
+        message: "Yeni şifrə minimum 8 simvol, 1 böyük hərf, 1 rəqəm və 1 xüsusi simvol içərməlidir",
       });
-    }
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
@@ -167,6 +171,8 @@ export const changePassword = async (req, res) => {
     res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
+
+
 export const deleteAccount = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -184,77 +190,63 @@ export const deleteAccount = async (req, res) => {
 };
 export const registerStudent = async (req, res) => {
   try {
-    const { name, email, password, grade } = req.body;
+    const { name, email, password, confirmPassword, grade } = req.body;
+
+    if (!name || !email || !password || !confirmPassword || !grade)
+      return res.status(400).json({ message: "Bütün xanaları doldurun" });
+
+    if (password !== confirmPassword)
+      return res.status(400).json({ message: "Şifrələr uyğun deyil" });
+
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%^&*]/.test(password))
+      return res.status(400).json({
+        message: "Şifrə minimum 8 simvol, 1 böyük hərf, 1 rəqəm və 1 xüsusi simvol içərməlidir",
+      });
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Bu email artıq istifadə olunur" });
-    }
+    if (existingUser)
+      return res.status(400).json({ message: "Email artıq mövcuddur" });
 
-    
-    let classDoc = await Class.findOne({ name: grade.toString() });
-
-    if (!classDoc) {
-      classDoc = new Class({
-        name: grade.toString(),
-        grade: parseInt(grade),
-        section: "",
-        sector: "",
-        students: [] 
-      });
-      await classDoc.save();
-    }
-
-    
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    
-    const newUser = new User({
+    await createUser({
       name,
       email,
-      password: hashedPassword,
-      class: classDoc._id, 
-      role: "pending"
+      password,
+      role: "pending",
+      grade: grade.toString()
     });
-
-    await newUser.save();
 
     res.status(201).json({ message: "Şagird qeydiyyatdan keçdi, admin təsdiqləməlidir." });
   } catch (err) {
     res.status(500).json({ message: "Xəta baş verdi", error: err.message });
   }
 };
+
+
 export const registerTeacher = async (req, res) => {
   try {
-    const { name, email, password, subjectName } = req.body;
+    const { name, email, password, confirmPassword, subjectName } = req.body;
 
-    if (!name || !email || !password || !subjectName) {
+    if (!name || !email || !password || !confirmPassword || !subjectName)
       return res.status(400).json({ message: "Bütün xanaları doldurun" });
-    }
+
+    if (password !== confirmPassword)
+      return res.status(400).json({ message: "Şifrələr uyğun deyil" });
+
+    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%^&*]/.test(password))
+      return res.status(400).json({
+        message: "Şifrə minimum 8 simvol, 1 böyük hərf, 1 rəqəm və 1 xüsusi simvol içərməlidir",
+      });
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Bu email artıq istifadə olunur" });
-    }
+    if (existingUser)
+      return res.status(400).json({ message: "Email artıq mövcuddur" });
 
-    let subject = await Subject.findOne({ name: new RegExp(`^${subjectName}$`, 'i') });
-
-    
-    if (!subject) {
-      subject = await Subject.create({ name: subjectName });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
+    await createUser({
       name,
       email,
-      password: hashedPassword,
-      subject: subject._id, 
-      role: "pending", 
+      password,
+      role: "pending"
     });
-
-    await newUser.save();
 
     res.status(201).json({ message: "Müəllim qeydiyyatdan keçdi, admin təsdiqləməlidir." });
   } catch (err) {
