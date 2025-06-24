@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import MarkAttendanceForm from "./MarkAttendanceForm";
+import MarkSummativeForm from "./MarkSummativeForm";
+import MarkBSQForm from "./MarkBSQForm";
+import AddHomeworkForm from "./AddHomeworkForm";
 
 const JournalTable = () => {
   const [lessons, setLessons] = useState([]);
@@ -66,23 +70,44 @@ const JournalTable = () => {
             Mövzu: {journal.topic || "-"} | Tarix:{" "}
             {new Date(journal.date).toLocaleDateString("az-AZ")}
           </p>
-          <p>
-            Tapşırıq:{" "}
-            {journal.records?.[0]?.homework?.text
-              ? journal.records[0].homework.text
-              : "-"}
-          </p>
+         <p>
+  📘 Tapşırıq: {journal.homework?.text?.trim() ? journal.homework.text : "-"}
+</p>
+
+{journal.homework?.file && (
+  <p>
+    📎 Fayl:{" "}
+    <a
+      href={`http://localhost:5000${journal.homework.file}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      Bax
+    </a>
+  </p>
+)}
+
+          <MarkAttendanceForm
+            journalId={journal._id}
+            students={journal.records.map((r) => r.student)}
+          />
+          <MarkSummativeForm journal={journal} />
+<AddHomeworkForm journalId={journal._id} />
+
+<MarkBSQForm
+  journalId={journal._id}
+  students={journal.records.map((r) => r.student)}
+/>
 
           <table border="1" cellPadding="5">
             <thead>
               <tr>
                 <th>Şagird</th>
                 <th>İştirak</th>
-                <th>Summativlər</th>
-                <th>Yarı il Ortalaması</th>
-                <th>BŞQ</th>
-                <th>Yekun Bal</th>
-                <th>Tapşırıq Yükləməsi</th>
+                <th>I Yarıil</th>
+                <th>II Yarıil</th>
+                <th>İllik nəticə</th>
+                <th>Tapşırıq</th>
                 <th>Tapşırıq Qiyməti</th>
               </tr>
             </thead>
@@ -91,26 +116,39 @@ const JournalTable = () => {
                 <tr key={idx}>
                   <td>{r.student?.name || "-"}</td>
                   <td>{r.attendance || "-"}</td>
+
                   <td>
-                    {r.summatives?.length > 0 ? (
-                      r.summatives.map((s, i) => (
-                        <div key={i}>
-                          {s.score} ({s.grade})
-                        </div>
-                      ))
-                    ) : (
-                      "-"
-                    )}
+                    {r.term1?.summatives?.length > 0
+                      ? r.term1.summatives.map((s, i) => (
+                          <div key={i}>
+                            {s.score} ({s.grade})
+                          </div>
+                        ))
+                      : "-"}
+                    <br />
+                    Ort.: {r.term1?.average ?? "-"} ({r.term1?.grade ?? "-"})
+                    <br />
+                    BŞQ: {r.term1?.bsq?.score ?? "-"} ({r.term1?.bsq?.grade ?? "-"})
                   </td>
+
                   <td>
-                    {r.midtermAverage ?? "-"} ({r.midtermGrade ?? "-"})
+                    {r.term2?.summatives?.length > 0
+                      ? r.term2.summatives.map((s, i) => (
+                          <div key={i}>
+                            {s.score} ({s.grade})
+                          </div>
+                        ))
+                      : "-"}
+                    <br />
+                    Ort.: {r.term2?.average ?? "-"} ({r.term2?.grade ?? "-"})
+                    <br />
+                    BŞQ: {r.term2?.bsq?.score ?? "-"} ({r.term2?.bsq?.grade ?? "-"})
                   </td>
+
                   <td>
-                    {r.bsq?.score ?? "-"} ({r.bsq?.grade ?? "-"})
+                    {r.final?.score ?? "-"} ({r.final?.grade ?? "-"})
                   </td>
-                  <td>
-                    {r.finalScore ?? "-"} ({r.finalGrade ?? "-"})
-                  </td>
+
                   <td>
                     {r.homework?.file ? (
                       <a href={r.homework.file} target="_blank" rel="noreferrer">
@@ -120,9 +158,7 @@ const JournalTable = () => {
                       "-"
                     )}
                   </td>
-                  <td>
-                    {r.homework?.grade != null ? r.homework.grade : "-"}
-                  </td>
+                  <td>{r.homework?.grade != null ? r.homework.grade : "-"}</td>
                 </tr>
               ))}
             </tbody>

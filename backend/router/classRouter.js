@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.post("/create", authMiddleware, isAdmin, createClass);
 router.post("/assign-teacher", authMiddleware, isAdmin, assignTeacherToClass);
-router.post("/assign-student",assignStudentToClass);
+router.post("/assign-student",assignStudentToClass,authMiddleware,isAdmin);
 router.post("/assign-multiple-students", authMiddleware, isAdmin, assignMultipleStudentsToClass);
 router.get("/all-classes", authMiddleware, isAdmin, getAllClasses);
 router.delete("/remove-teacher/:className", authMiddleware, isAdmin, removeTeacherFromClass);

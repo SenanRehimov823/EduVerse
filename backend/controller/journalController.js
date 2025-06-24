@@ -14,12 +14,12 @@ const getGradeFromScore = (score) => {
 
 export const markAttendance = async (req, res) => {
   try {
-    const { journalId, studentName, status } = req.body;
+    const { journalId, studentId, status } = req.body;
 
-    const journal = await Journal.findById(journalId).populate("records.student", "name");
+    const journal = await Journal.findById(journalId);
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const record = journal.records.find(r => r.student.name === studentName);
+    const record = journal.records.find(r => r.student.toString() === studentId);
     if (!record) return res.status(404).json({ message: "Tələbə tapılmadı" });
 
     record.attendance = status;
@@ -31,83 +31,79 @@ export const markAttendance = async (req, res) => {
   }
 };
 
+
 export const addSummative = async (req, res) => {
   try {
-    const { journalId, studentName, score } = req.body;
+    const { journalId, studentId, score, term } = req.body;
+    if (!["term1", "term2"].includes(term))
+      return res.status(400).json({ message: "Yanlış yarımil seçimi" });
 
-    if (score < 0 || score > 100) {
+    if (score < 0 || score > 100)
       return res.status(400).json({ message: "Summativ 0-100 arası olmalıdır" });
-    }
 
-    const journal = await Journal.findById(journalId).populate("records.student", "name");
+    const journal = await Journal.findById(journalId);
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const record = journal.records.find(r => r.student.name === studentName);
-    if (!record) return res.status(404).json({ message: "Tələbə tapılmadı" });
+    const record = journal.records.find(r => r.student.toString() === studentId);
+    if (!record) return res.status(404).json({ message: "Şagird tapılmadı" });
 
     const grade = getGradeFromScore(score);
-    record.summatives.push({ score, grade });
+    const date = new Date();
 
-    const scores = record.summatives.map(s => s.score);
+    record[term].summatives.push({ score, grade, date });
+
+    const scores = record[term].summatives.map(s => s.score);
     const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
 
-    record.midtermAverage = avg;
-    record.midtermGrade = getGradeFromScore(avg);
+    record[term].average = avg;
+    record[term].grade = getGradeFromScore(avg);
 
     await journal.save();
 
     res.status(200).json({
-      message: "Summativ əlavə olundu",
-      summatives: record.summatives,
-      midtermAverage: record.midtermAverage,
-      midtermGrade: record.midtermGrade
+      message: `Summativ (${term}) əlavə olundu`,
+      summatives: record[term].summatives,
+      average: record[term].average,
+      grade: record[term].grade
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi" });
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
-
-export const setBSQAndCalculateFinal = async (req, res) => {
+export const calculateFinalResults = async (req, res) => {
   try {
-    const { journalId, scores } = req.body;
-    const journal = await Journal.findById(journalId).populate("records.student", "name"); // <-- DÜZƏLİŞ
+    const { journalId } = req.body;
+    const journal = await Journal.findById(journalId);
 
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const finalResults = [];
+    for (let record of journal.records) {
+      const t1 = record.term1;
+      const t2 = record.term2;
 
-    for (const { studentName, bsq } of scores) {
-      const record = journal.records.find(r => r.student.name === studentName);
-      if (!record || !record.midtermAverage) continue;
+      if (!t1.average || !t1.bsq?.score || !t2.average || !t2.bsq?.score) continue;
 
-      record.bsq = {
-        score: bsq,
-        grade: getGradeFromScore(bsq)
-      };
+      const term1Score = Math.round(t1.average * 0.4 + t1.bsq.score * 0.6);
+      const term2Score = Math.round(t2.average * 0.4 + t2.bsq.score * 0.6);
 
-      const finalScore = Math.round((record.midtermAverage * 0.4) + (bsq * 0.6));
+      const finalScore = Math.round((term1Score + term2Score) / 2);
       const finalGrade = getGradeFromScore(finalScore);
 
-      record.finalScore = finalScore;
-      record.finalGrade = finalGrade;
-
-      finalResults.push({
-        student: record.student,
-        finalScore,
-        finalGrade
-      });
+      record.final = {
+        score: finalScore,
+        grade: finalGrade
+      };
     }
 
     await journal.save();
 
-    res.status(200).json({
-      message: "Yekun nəticələr hesablandı",
-      results: finalResults
-    });
+    res.status(200).json({ message: "İllik nəticələr hesablandı", journal });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
+
 
 export const getJournalBySubject = async (req, res) => {
   try {
@@ -220,28 +216,18 @@ export const updateJournalTopic = async (req, res) => {
 };
 export const addHomeworkByTeacher = async (req, res) => {
   try {
-    const { className, subject, homeworkText, date } = req.body;
-    const teacherId = req.user.id;
+    const { journalId } = req.body;
+    const homeworkText = req.body.homeworkText || "";
+    const file = req.file;
 
-    const grade = parseInt(className);
-    const section = className.replace(/[0-9]/g, "") || "";
-
-    const classObj = await Class.findOne({ grade, section });
-    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
-
-    const journal = await Journal.findOne({
-      classId: classObj._id,
-      subject,
-      date: { $gte: new Date(date).setHours(0,0,0,0), $lt: new Date(date).setHours(23,59,59,999) },
-      teacher: teacherId
-    });
-
+    const journal = await Journal.findById(journalId);
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    journal.records.forEach(rec => {
-      if (!rec.homework) rec.homework = {};
-      rec.homework.text = homeworkText;
-    });
+    // Yuxarı səviyyəyə tapşırıq əlavə et
+    journal.homework = {
+      text: homeworkText,
+      file: file ? `/uploads/${file.filename}` : ""
+    };
 
     await journal.save();
 
@@ -250,6 +236,9 @@ export const addHomeworkByTeacher = async (req, res) => {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
+
+
 export const submitHomeworkByStudent = async (req, res) => {
   try {
     const { className, subject, date, homeworkText } = req.body;
@@ -330,6 +319,45 @@ export const updateJournal = async (req, res) => {
     await journal.save();
 
     res.status(200).json({ message: "Jurnal uğurla yeniləndi", journal });
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};
+
+export const addBSQScore = async (req, res) => {
+  try {
+    const { journalId, studentId, score, term } = req.body;
+
+    if (!["term1", "term2"].includes(term)) {
+      return res.status(400).json({ message: "Yanlış yarımil seçimi" });
+    }
+
+    if (score < 0 || score > 100) {
+      return res.status(400).json({ message: "Qiymət 0-100 arası olmalıdır" });
+    }
+
+    const journal = await Journal.findById(journalId);
+    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
+
+    const record = journal.records.find(r => r.student.toString() === studentId);
+    if (!record) return res.status(404).json({ message: "Şagird tapılmadı" });
+
+    const grade = getGradeFromScore(score);
+
+    // BSQ-ni təyin et
+    record[term].bsq = { score, grade };
+
+    // Əgər artıq summativ ortalama mövcuddursa, ortalama + bsq ilə yeni nəticə çıxar
+    const termAvg = record[term].average;
+    if (termAvg && score) {
+      const weighted = Math.round(termAvg * 0.4 + score * 0.6);
+      record[term].average = weighted;
+      record[term].grade = getGradeFromScore(weighted);
+    }
+
+    await journal.save();
+
+    res.status(200).json({ message: `BŞQ (${term}) əlavə edildi`, record: record[term] });
   } catch (error) {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }

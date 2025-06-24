@@ -2,14 +2,16 @@ import express from "express";
 import {
   markAttendance,
   addSummative,
-  setBSQAndCalculateFinal,
+  
   getJournalBySubject,
   getStudentJournals,
   updateJournalTopic,
   getJournalByDate,
   addHomeworkByTeacher,
   submitHomeworkByStudent,
-  updateJournal
+  updateJournal,
+  calculateFinalResults,
+  addBSQScore
 } from "../controller/journalController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { isTeacher } from "../middleware/isTeacher.js";
@@ -21,14 +23,14 @@ import upload from "../middleware/upload.js";
 const router = express.Router();
 router.patch("/attendance", authMiddleware, isTeacher, markAttendance);
 router.patch("/summative", authMiddleware, isTeacher, addSummative);
-router.post("/bsq", authMiddleware, isTeacher, setBSQAndCalculateFinal);
+router.post("/bsq", authMiddleware, isTeacher, addBSQScore);
+router.post("/final-calculate", authMiddleware, calculateFinalResults);
 router.get("/by-subject/:className/:subject", authMiddleware, isTeacher, getJournalBySubject);
-
 router.get("/my", authMiddleware, isStudent, getStudentJournals);
 router.patch("/topic", authMiddleware, isTeacher, updateJournalTopic);
 router.get("/by-date", authMiddleware, isAdminOrTeacher, getJournalByDate);
 router.put("/update/:journalId", authMiddleware, isTeacher, updateJournal);
-router.patch("/homework", authMiddleware, isTeacher, addHomeworkByTeacher);
+router.patch("/homework", authMiddleware, isTeacher,upload.single("file"), addHomeworkByTeacher);
 router.patch("/homework-submit", authMiddleware, isStudent, upload.single("file"), submitHomeworkByStudent);
 router.post("/homework/grade", authMiddleware, isTeacher, gradeHomework);
 export default router;

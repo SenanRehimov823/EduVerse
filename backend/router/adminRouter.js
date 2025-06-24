@@ -9,7 +9,6 @@ import { getStudentsForClassAssignment } from "../controller/adminController.js"
 
 const router = express.Router();
 
-
 router.put("/set-role/:id", authMiddleware, isAdmin, setUserRole);
 router.get("/all-users", authMiddleware, isAdmin, getAllUsers);
 router.post("/create-user", authMiddleware, isAdmin, createUserByAdmin);
