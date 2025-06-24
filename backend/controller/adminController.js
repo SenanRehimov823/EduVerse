@@ -1,3 +1,4 @@
+
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import Class from "../model/class.js";
@@ -33,16 +34,13 @@ export const setUserRole = async (req, res) => {
     res.status(500).json({ message: "Server xətası" });
   }
 };
-export const getAllPendingStudentsWithClass = async (req, res) => {
+export const getAllPendingUsersWithInfo = async (req, res) => {
   try {
-    const students = await User.find({
-      role: "pending",
-      class: { $ne: null }
-    })
+    const users = await User.find({ role: "pending" })
       .populate("class", "name")
-      .select("name class");
+      .select("name class grade subject subjectName");
 
-    res.status(200).json(students);
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Xəta baş verdi" });
   }
@@ -141,8 +139,7 @@ export const setMultipleUserRoles = async (req, res) => {
 export const getTeachersWithSubjects = async (req, res) => {
   try {
     const teachers = await User.find({ role: "teacher" })
-      .populate("subject", "name")
-      .select("name email subject");
+      .select("name email subjectName");
 
     res.status(200).json(teachers);
   } catch (error) {
@@ -152,29 +149,27 @@ export const getTeachersWithSubjects = async (req, res) => {
 export const getStudentsForClassAssignment = async (req, res) => {
   try {
     const { grade } = req.query;
+    if (!grade) return res.status(400).json({ message: "Grade tələb olunur" });
 
-    if (!grade) {
-      return res.status(400).json({ message: "Grade tələb olunur" });
-    }
-
-    // Bütün eyni grade-də olan sinifləri tapırıq (məs: 8, 9 və s.)
     const classesInGrade = await Class.find({ grade: parseInt(grade) });
+    const assignedIds = classesInGrade.flatMap(cls => cls.students);
 
-    if (!classesInGrade || classesInGrade.length === 0) {
-      return res.status(404).json({ message: "Bu grade üçün heç bir sinif tapılmadı" });
-    }
-
-    // Bu grade-də təyin olunmuş bütün şagirdlərin id-lərini çıxarırıq
-    const assignedStudentIds = classesInGrade.flatMap(cls => cls.students);
-
-    // Bu grade-də olub heç bir sinifə təyin olunmamış şagirdləri gətiririk
     const students = await User.find({
       role: "student",
-      class: { $in: classesInGrade.map(cls => cls._id) },
-      _id: { $nin: assignedStudentIds }
+      grade: grade.toString(),
+      _id: { $nin: assignedIds }
     }).select("name");
 
     res.status(200).json({ students });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};
+
+export const getTeachers = async (req, res) => {
+  try {
+    const teachers = await User.find({ role: "teacher" }, "name _id email");
+    res.json(teachers);
   } catch (error) {
     res.status(500).json({ message: "Server xətası", error: error.message });
   }

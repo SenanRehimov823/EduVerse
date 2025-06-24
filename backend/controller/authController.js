@@ -232,10 +232,16 @@ export const registerTeacher = async (req, res) => {
     if (password !== confirmPassword)
       return res.status(400).json({ message: "Şifrələr uyğun deyil" });
 
-    if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password) || !/[!@#$%^&*]/.test(password))
+    if (
+      password.length < 8 ||
+      !/[A-Z]/.test(password) ||
+      !/[0-9]/.test(password) ||
+      !/[!@#$%^&*]/.test(password)
+    ) {
       return res.status(400).json({
         message: "Şifrə minimum 8 simvol, 1 böyük hərf, 1 rəqəm və 1 xüsusi simvol içərməlidir",
       });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -245,11 +251,29 @@ export const registerTeacher = async (req, res) => {
       name,
       email,
       password,
-      role: "pending"
+      subjectName, 
+      role: "pending",
     });
 
     res.status(201).json({ message: "Müəllim qeydiyyatdan keçdi, admin təsdiqləməlidir." });
   } catch (err) {
     res.status(500).json({ message: "Xəta baş verdi", error: err.message });
+  }
+};
+
+
+export const getTeachersBySubject = async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+
+    const subject = await Subject.findById(subjectId).populate("teacher", "_id name");
+
+    if (!subject || !subject.teacher) {
+      return res.status(404).json({ message: "Bu fənn üçün müəllim tapılmadı" });
+    }
+
+    res.status(200).json({ teachers: [subject.teacher] }); // array şəklində frontend uyğundur
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };

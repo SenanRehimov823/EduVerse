@@ -115,7 +115,8 @@ export const getJournalBySubject = async (req, res) => {
     const teacherId = req.user.id;
 
     const grade = parseInt(className);
-    const section = className.replace(/[0-9]/g, "");
+    const section = className.replace(/[0-9]/g, "") || "";
+
     const classObj = await Class.findOne({ grade, section });
     if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
 
@@ -132,7 +133,8 @@ export const getJournalBySubject = async (req, res) => {
 
     res.status(200).json({ journal });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi"});
+    console.error("Jurnal gətirərkən xəta:", error);
+    res.status(500).json({ message: "Xəta baş verdi" });
   }
 };
 

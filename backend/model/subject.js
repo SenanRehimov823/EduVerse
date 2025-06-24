@@ -6,7 +6,13 @@ const subjectSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true
+  },
+  teacher: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   }
 });
 
-export default mongoose.model("Subject", subjectSchema);
+const Subject = mongoose.model("Subject", subjectSchema);
+export default Subject;

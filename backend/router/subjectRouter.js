@@ -4,6 +4,6 @@ import { createSubject, getSubjects } from "../controller/subjectController.js";
 const router = express.Router();
 
 router.post("/create", createSubject); 
-router.get("/", getSubjects);          
+router.get("/all", getSubjects);          
 
 export default router;
