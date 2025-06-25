@@ -20,7 +20,6 @@ router.get("/subjects", authMiddleware, getMySubjects);
 
 router.get("/journal/:subject", authMiddleware, getMyJournalBySubject);
 
-
 router.get("/quiz-results/:subject", authMiddleware, getMyQuizResultsBySubject);
 
 

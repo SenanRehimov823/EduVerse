@@ -11,7 +11,9 @@ import {
   submitHomeworkByStudent,
   updateJournal,
   calculateFinalResults,
-  addBSQScore
+  addBSQScore,
+ 
+  createJournal
 } from "../controller/journalController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { isTeacher } from "../middleware/isTeacher.js";
@@ -33,4 +35,6 @@ router.put("/update/:journalId", authMiddleware, isTeacher, updateJournal);
 router.patch("/homework", authMiddleware, isTeacher,upload.single("file"), addHomeworkByTeacher);
 router.patch("/homework-submit", authMiddleware, isStudent, upload.single("file"), submitHomeworkByStudent);
 router.post("/homework/grade", authMiddleware, isTeacher, gradeHomework);
+router.post("/create", authMiddleware, isTeacher, createJournal);
+
 export default router;

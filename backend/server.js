@@ -35,4 +35,5 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/quiz-result", quizResultRouter);
 app.use("/api/student", studentRouter)
 app.use("/chat", chatRouter);
+app.use("/uploads", express.static("uploads"));
 app.listen(5000, () => console.log("Server işləyir"));

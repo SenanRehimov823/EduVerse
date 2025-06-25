@@ -3,7 +3,7 @@ const journalSchema = new mongoose.Schema({
   classId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Class",
-    required: true,
+    required: false, 
   },
   subject: { type: String, required: true },
   topic: { type: String, default: "" },
@@ -13,13 +13,10 @@ const journalSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-
-  
   homework: {
     text: { type: String, default: "" },
     file: { type: String, default: "" },
   },
-
   records: [
     {
       student: {
@@ -47,7 +44,6 @@ const journalSchema = new mongoose.Schema({
         score: Number,
         grade: Number
       },
-    
       homework: {
         file: { type: String, default: "" },
         grade: { type: Number, default: null }

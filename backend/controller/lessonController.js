@@ -69,13 +69,15 @@ export const createLessonWithJournal = async (req, res) => {
 export const getLessonsByTeacher = async (req, res) => {
   try {
     const teacherId = req.user.id;
+
     const lessons = await Lesson.find({ teacher: teacherId })
       .populate("subject", "name")
-      .populate("class", "grade section");
+      .populate("class", "grade section"); // burada _id avtomatik gəlir
 
     const formatted = lessons.map(lesson => ({
       subject: lesson.subject.name,
       className: `${lesson.class.grade}${lesson.class.section}`,
+      classId: lesson.class._id, // 🔥 Əlavə olundu
       createdAt: lesson.createdAt,
     }));
 
