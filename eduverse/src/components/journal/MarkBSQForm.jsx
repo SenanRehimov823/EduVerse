@@ -26,7 +26,7 @@ const MarkBSQForm = ({ journalId, students }) => {
         { withCredentials: true }
       );
 
-      // Final nəticəni yenilə (optional: əgər avtomatik yeniləmirsə)
+      
       await axios.post(
         "http://localhost:5000/api/journal/final-calculate",
         { journalId },

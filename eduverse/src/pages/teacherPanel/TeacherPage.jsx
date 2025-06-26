@@ -47,7 +47,7 @@ const TeacherPage = () => {
     fetchData();
   }, []);
 
-  // Fənn dəyişəndə müəllimləri yüklə
+  
   useEffect(() => {
     const fetchTeachers = async () => {
       if (!subjectId) return setTeachers([]);

@@ -4,6 +4,7 @@ import MarkAttendanceForm from "./MarkAttendanceForm";
 import MarkSummativeForm from "./MarkSummativeForm";
 import MarkBSQForm from "./MarkBSQForm";
 import AddHomeworkForm from "./AddHomeworkForm";
+import GradeHomeworkForm from "./GradeHomeworkForm";
 
 const JournalTable = () => {
   const [lessons, setLessons] = useState([]);
@@ -172,7 +173,7 @@ const JournalTable = () => {
             journalId={journal._id}
             students={journal.records.map((r) => r.student)}
           />
-
+<GradeHomeworkForm journal={journal} />
           <table border="1" cellPadding="5">
             <thead>
               <tr>

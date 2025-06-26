@@ -72,12 +72,12 @@ export const getLessonsByTeacher = async (req, res) => {
 
     const lessons = await Lesson.find({ teacher: teacherId })
       .populate("subject", "name")
-      .populate("class", "grade section"); // burada _id avtomatik gəlir
+      .populate("class", "grade section"); 
 
     const formatted = lessons.map(lesson => ({
       subject: lesson.subject.name,
       className: `${lesson.class.grade}${lesson.class.section}`,
-      classId: lesson.class._id, // 🔥 Əlavə olundu
+      classId: lesson.class._id, 
       createdAt: lesson.createdAt,
     }));
 

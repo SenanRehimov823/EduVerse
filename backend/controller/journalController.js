@@ -118,7 +118,7 @@ export const getJournalBySubject = async (req, res) => {
 
     const journal = await Journal.findOne({
       classId: classObj._id,
-      subject,
+      subject, // already ObjectId
       teacher: teacherId
     })
       .populate("teacher", "name")
@@ -134,10 +134,11 @@ export const getJournalBySubject = async (req, res) => {
   }
 };
 
+
 export const getStudentJournals = async (req, res) => {
   try {
-    const studentId = req.user.id;
-    const classId = req.user.classId;
+    const student = await User.findById(req.user.id);
+    const classId = student.class;
 
     const journals = await Journal.find({ classId })
       .populate("teacher", "name")
@@ -146,7 +147,7 @@ export const getStudentJournals = async (req, res) => {
 
     const filtered = journals.map(journal => {
       const myRecord = journal.records.find(
-        r => r.student._id.toString() === studentId
+        r => r.student._id.toString() === student._id.toString()
       );
       if (!myRecord) return null;
 
@@ -163,9 +164,10 @@ export const getStudentJournals = async (req, res) => {
 
     res.status(200).json({ journals: filtered });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası" });
+    res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
+
 export const updateJournalTopic = async (req, res) => {
   try {
     const { journalId, topic, date } = req.body;
@@ -228,7 +230,7 @@ export const addHomeworkByTeacher = async (req, res) => {
     const journal = await Journal.findById(journalId);
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    // Yuxarı səviyyəyə tapşırıq əlavə et
+    
     journal.homework = {
       text: homeworkText,
       file: file ? `/uploads/${file.filename}` : ""
@@ -281,32 +283,18 @@ export const submitHomeworkByStudent = async (req, res) => {
 };
 export const gradeHomework = async (req, res) => {
   try {
-    const teacherId = req.user.id;
-    const { className, subject, studentName, grade } = req.body;
+    const { journalId, studentId, grade } = req.body;
 
-    const gradeNum = parseInt(className);
-    const section = className.replace(/[0-9]/g, "") || "";
-
-    const classObj = await Class.findOne({ grade: gradeNum, section });
-    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
-
-    const student = await User.findOne({ name: studentName, role: "student" });
-    if (!student) return res.status(404).json({ message: "Şagird tapılmadı" });
-
-    const journal = await Journal.findOne({
-      classId: classObj._id,
-      subject,
-      teacher: teacherId
-    });
+    const journal = await Journal.findById(journalId);
     if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
 
-    const record = journal.records.find(r => r.student.toString() === student._id.toString());
-    if (!record) return res.status(404).json({ message: "Şagird jurnalda tapılmadı" });
+    const record = journal.records.find(r => r.student.toString() === studentId);
+    if (!record) return res.status(404).json({ message: "Şagird tapılmadı" });
 
     record.homework.grade = grade;
     await journal.save();
 
-    res.status(200).json({ message: "Tapşırığa qiymət verildi" });
+    res.status(200).json({ message: "Tapşırığa qiymət verildi", updated: record.homework });
   } catch (error) {
     res.status(500).json({ message: "Server xətası", error: error.message });
   }
@@ -374,14 +362,50 @@ export const createJournal = async (req, res) => {
 
     const students = await User.find({ class: classId, role: "student" });
 
-    const records = students.map((student) => ({
-      student: student._id,
-      attendance: null,
-      term1: { summatives: [], bsq: {}, average: null, grade: null },
-      term2: { summatives: [], bsq: {}, average: null, grade: null },
-      final: { score: null, grade: null },
-      homework: { file: "", grade: null }
-    }));
+    const latestJournal = await Journal.findOne({
+      classId,
+      subject,
+      teacher: teacherId,
+    }).sort({ date: -1 });
+
+    const records = students.map((student) => {
+      const prevRecord = latestJournal?.records?.find((r) => {
+        const prevId = r.student?._id?.toString() || r.student?.toString();
+        return prevId === student._id.toString();
+      });
+
+      return {
+        student: student._id,
+        attendance: null,
+        term1: {
+          summatives: Array.isArray(prevRecord?.term1?.summatives)
+            ? prevRecord.term1.summatives.map(s => ({ ...s }))  // 🛠 Dərin kopya
+            : [],
+          bsq: {
+            score: prevRecord?.term1?.bsq?.score ?? null,
+            grade: prevRecord?.term1?.bsq?.grade ?? null,
+          },
+          average: prevRecord?.term1?.average ?? null,
+          grade: prevRecord?.term1?.grade ?? null,
+        },
+        term2: {
+          summatives: Array.isArray(prevRecord?.term2?.summatives)
+            ? prevRecord.term2.summatives.map(s => ({ ...s }))  // 🛠 Dərin kopya
+            : [],
+          bsq: {
+            score: prevRecord?.term2?.bsq?.score ?? null,
+            grade: prevRecord?.term2?.bsq?.grade ?? null,
+          },
+          average: prevRecord?.term2?.average ?? null,
+          grade: prevRecord?.term2?.grade ?? null,
+        },
+        final: {
+          score: prevRecord?.final?.score ?? null,
+          grade: prevRecord?.final?.grade ?? null,
+        },
+        homework: { file: "", grade: null },
+      };
+    });
 
     const journal = new Journal({
       classId,

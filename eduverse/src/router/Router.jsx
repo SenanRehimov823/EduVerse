@@ -8,6 +8,13 @@ import AdminPanel from "../pages/adminPanel/AdminPanel";
 import ProtectedRoute from "./ProtectedRoute";
 import TeacherPage from "../pages/teacherPanel/TeacherPage";
 import JournalPage from "../pages/teacherPanel/JournalPage";
+import CreateQuizPage from "../pages/teacherPanel/CreateQuizPage";
+import QuizListPage from "../pages/teacherPanel/QuizListPage";
+import QuizResultDetails from "../components/quiz/QuizResultDetails";
+import StudentProfile from "../pages/studentPanel/StudentProfile";
+import MySubjects from "../pages/studentPanel/MySubjects";
+import MyJournal from "../pages/studentPanel/MyJournal";
+
 
 const Router = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -22,6 +29,14 @@ const Router = () => {
       <Route path="/admin" element={<AdminPanel />} />
  <Route path="/teacher-page" element={<TeacherPage/>} />
  <Route path="/teacher/journal" element={<JournalPage/>} />
+  <Route path="/teacher/quiz/create" element={<CreateQuizPage />} />
+  <Route path="/teacher/quiz/list" element={<QuizListPage />} />
+   <Route path="/teacher/quiz/:quizId/results" element={<QuizResultDetails />} />
+   <Route path="/student/profile" element={<StudentProfile />} />
+   <Route path="/student/subjects" element={<MySubjects />} />
+ {/* <Route path="/student/journal/:subject" element={<MyJournal />} /> */}
+ <Route path="/student/my-journals" element={<MyJournal />} />
+
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"

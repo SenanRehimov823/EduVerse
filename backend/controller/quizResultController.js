@@ -51,32 +51,49 @@ export const getResultsByQuizIdForTeacher = async (req, res) => {
     const { quizId } = req.params;
     const teacherId = req.user.id;
 
+    console.log("teacherId", teacherId);
+    console.log("quizId", quizId);
+
     const quiz = await Quiz.findById(quizId);
     if (!quiz || quiz.teacher.toString() !== teacherId) {
       return res.status(403).json({ message: "Bu quiz sizin deyil" });
     }
 
     const classObj = await Class.findById(quiz.classId).populate("students", "name");
+    if (!classObj) {
+      console.log("Sinif tapılmadı:", quiz.classId);
+      return res.status(404).json({ message: "Sinif tapılmadı" });
+    }
+
     const allResults = await QuizResult.find({ quiz: quizId }).populate("student", "name");
 
     const results = classObj.students.map(student => {
       const found = allResults.find(r => r.student._id.toString() === student._id.toString());
+
       return {
         studentName: student.name,
         score: found ? found.score : null,
-        status: found ? (found.autoSubmitted ? "Vaxt bitdi (avtomatik)" : "Bitirib") : "Başlamayıb"
+        status: found ? (found.autoSubmitted ? "Vaxt bitdi (avtomatik)" : "Bitirib") : "Başlamayıb",
+        answers: found ? found.answers : []
       };
     });
 
     res.status(200).json({
       quizTitle: quiz.title,
       class: { grade: classObj.grade, section: classObj.section },
+      questions: quiz.questions.map((q, i) => ({
+        question: q.question,
+        options: q.options,
+        correctAnswers: q.correctAnswers
+      })),
       results
     });
   } catch (err) {
+    console.error("❌ SERVER ERROR:", err);
     res.status(500).json({ message: "Server xətası", error: err.message });
   }
 };
+
 
 export const getQuizStats = async (req, res) => {
   try {

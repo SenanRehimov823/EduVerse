@@ -4,16 +4,17 @@ import Journal from "../model/journal.js";
 import Quiz from "../model/quiz.js";
 import User from "../model/user.js";
 import multer from "multer";
-
+import Subject from "../model/subject.js";
 
 export const getMySubjects = async (req, res) => {
   try {
     const studentId = req.user.id;
     const student = await User.findById(studentId).populate("class");
 
-    const lessons = await Lesson.find({ classId: student.class._id })
+    const lessons = await Lesson.find({ class: student.class._id }) 
       .populate("teacher", "name")
-      .select("name");
+      .populate("subject", "name")
+      .select("subject teacher");
 
     res.status(200).json({ subjects: lessons });
   } catch (error) {
@@ -22,39 +23,66 @@ export const getMySubjects = async (req, res) => {
 };
 
 
+
+
 export const getMyJournalBySubject = async (req, res) => {
   try {
     const studentId = req.user.id;
-    const { subject } = req.params;
+    const subjectName = req.params.subject;
+
+    const student = await User.findById(studentId).populate("class");
+    if (!student || !student.class) {
+      return res.status(404).json({ message: "Şagird və ya sinif tapılmadı" });
+    }
+
+    const subject = await Subject.findOne({ name: new RegExp(`^${subjectName}$`, "i") });
+    if (!subject) {
+      return res.status(404).json({ message: "Fənn tapılmadı" });
+    }
+
+    const lesson = await Lesson.findOne({
+      class: student.class._id,
+      subject: subject._id
+    }).populate("subject teacher");
+
+    if (!lesson || !lesson.teacher || !lesson.subject) {
+      return res.status(404).json({ message: "Dərs və ya əlaqəli müəllim/fənn tapılmadı" });
+    }
 
     const journalEntries = await Journal.find({
-      subject,
-      "records.student": studentId
-    })
-      .populate("teacher", "name")
-      .sort({ date: 1 });
+      classId: student.class._id,
+      subjectId: subject._id
+    });
 
-    const myRecords = journalEntries.map(entry => {
-      const record = entry.records.find(r => r.student.toString() === studentId);
+    const records = journalEntries.map(journal => {
+      const record = journal.records.find(r => r.student.toString() === studentId);
       return {
-        date: entry.date,
-        topic: entry.topic,
-        teacher: entry.teacher.name,
-        attendance: record.attendance,
-        summatives: record.summatives,
-        bsq: record.bsq,
-        finalScore: record.finalScore,
-        finalGrade: record.finalGrade,
-        homework: record.homework
+        date: journal.date,
+        attendance: record?.attendance || "Qeydə alınmayıb",
+        term1: record?.term1 || {
+          summatives: [],
+          bsq: { score: null, grade: null },
+          average: null
+        },
+        term2: record?.term2 || {
+          summatives: [],
+          bsq: { score: null, grade: null },
+          average: null
+        },
+        final: record?.final || { score: null, grade: null },
+        homework: record?.homework || { file: null, grade: null }
       };
     });
 
-    res.status(200).json({ subject, records: myRecords });
-  } catch (error) {
-    res.status(500).json({ message: "Jurnal tapılmadı", error: error.message });
+    res.status(200).json({
+      teacherName: lesson.teacher.name,
+      subject: lesson.subject.name,
+      records
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server xətası", error: err.message });
   }
 };
-
 
 export const getMyQuizResultsBySubject = async (req, res) => {
   try {
@@ -112,6 +140,7 @@ export const getStudentProfile = async (req, res) => {
       email: student.email,
       image: student.image,
       className: student.class ? `${student.class.grade}${student.class.section}` : null,
+       role: student.role
     });
   } catch (err) {
     res.status(500).json({ message: "Xəta baş verdi", error: err.message });
@@ -123,17 +152,20 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage }).single("image");
 
-export const updateProfileImage = (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) return res.status(400).json({ message: "Yükləmə xətası", error: err.message });
-    try {
-      await User.findByIdAndUpdate(req.user.id, { image: `/uploads/${req.file.filename}` });
-      res.status(200).json({ message: "Şəkil yeniləndi" });
-    } catch (error) {
-      res.status(500).json({ message: "Server xətası" });
-    }
-  });
+export const updateProfileImage = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: "Şəkil seçilməyib" });
+
+    await User.findByIdAndUpdate(req.user.id, {
+      image: `/uploads/${req.file.filename}`,
+    });
+
+    res.status(200).json({ message: "Şəkil yeniləndi" });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
+  }
 };
+
 
 
 export const getActiveQuizzes = async (req, res) => {
