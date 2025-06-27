@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const chatMessageSchema = new mongoose.Schema({
-  group: {
+  const chatMessageSchema = new mongoose.Schema({
+  lesson: { 
     type: mongoose.Schema.Types.ObjectId,
-    ref: "ClassGroupChat",
+    ref: "Lesson",
     required: true,
   },
   sender: {

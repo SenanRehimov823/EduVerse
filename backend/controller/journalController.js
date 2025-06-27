@@ -157,6 +157,7 @@ export const getStudentJournals = async (req, res) => {
         topic: journal.topic,
         date: journal.date,
         teacher: journal.teacher,
+        homework: journal.homework,
         classId: journal.classId,
         record: myRecord
       };
@@ -248,29 +249,25 @@ export const addHomeworkByTeacher = async (req, res) => {
 
 export const submitHomeworkByStudent = async (req, res) => {
   try {
-    const { className, subject, date, homeworkText } = req.body;
+    const { journalId } = req.body;
     const file = req.file?.filename || "";
     const studentId = req.user.id;
 
-    const grade = parseInt(className);
-    const section = className.replace(/[0-9]/g, "") || "";
+    const journal = await Journal.findById(journalId);
+    if (!journal) {
+      return res.status(404).json({ message: "Jurnal tapılmadı" });
+    }
 
-    const classObj = await Class.findOne({ grade, section });
-    if (!classObj) return res.status(404).json({ message: "Sinif tapılmadı" });
+    const record = journal.records.find(
+      (r) => r.student.toString() === studentId.toString()
+    );
 
-    const journal = await Journal.findOne({
-      classId: classObj._id,
-      subject,
-      date: { $gte: new Date(date).setHours(0,0,0,0), $lt: new Date(date).setHours(23,59,59,999) }
-    });
-
-    if (!journal) return res.status(404).json({ message: "Jurnal tapılmadı" });
-
-    const record = journal.records.find(r => r.student.toString() === studentId);
-    if (!record) return res.status(404).json({ message: "Şagird üçün qeyd tapılmadı" });
+    if (!record) {
+      return res.status(404).json({ message: "Şagird üçün qeyd tapılmadı" });
+    }
 
     record.homework = {
-      text: homeworkText || "",
+      text: "",
       file: file ? `/uploads/${file}` : ""
     };
 
@@ -281,6 +278,10 @@ export const submitHomeworkByStudent = async (req, res) => {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
+
+
+
 export const gradeHomework = async (req, res) => {
   try {
     const { journalId, studentId, grade } = req.body;

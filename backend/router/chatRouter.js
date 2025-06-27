@@ -1,14 +1,24 @@
 import express from "express";
-import { sendMessageToGroup, getGroupMessages, editMessage, deleteMessage } from "../controller/chatMessageController.js";
+import {
+  sendMessageToLesson,
+  getLessonMessages,
+  editMessageFromLesson,
+  deleteMessageFromLesson
+} from "../controller/chatMessageController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/send", authMiddleware, sendMessageToGroup);
-router.get("/group/:groupId", authMiddleware, getGroupMessages);
-router.delete("/message/:messageId", authMiddleware, deleteMessage);
+
+router.post("/lesson/send", authMiddleware, sendMessageToLesson);
 
 
-router.put("/message/:messageId", authMiddleware, editMessage);
+router.get("/lesson/:lessonId", authMiddleware, getLessonMessages);
+
+
+router.put("/lesson/message/:messageId", authMiddleware, editMessageFromLesson);
+
+
+router.delete("/lesson/message/:messageId", authMiddleware, deleteMessageFromLesson);
 
 export default router;

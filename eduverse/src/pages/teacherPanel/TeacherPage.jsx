@@ -27,7 +27,6 @@ const TeacherPage = () => {
     fetchUser();
   }, []);
 
-  // Sinifləri və fənnləri yüklə
   useEffect(() => {
     const fetchData = async () => {
       try {

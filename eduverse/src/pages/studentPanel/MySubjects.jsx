@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router"; 
+import { useNavigate } from "react-router";
 
 const MySubjects = () => {
   const [subjects, setSubjects] = useState([]);
@@ -23,7 +23,13 @@ const MySubjects = () => {
 
   const goToJournal = (subjectName) => {
     navigate("/student/my-journals", {
-      state: { subject: subjectName }, // state vasitəsilə göndəririk
+      state: { subject: subjectName },
+    });
+  };
+
+  const goToChat = (lessonId) => {
+    navigate("/student/chat-room", {
+      state: { lessonId },
     });
   };
 
@@ -38,12 +44,20 @@ const MySubjects = () => {
             <div className="card mb-3 p-3 shadow-sm">
               <h5><strong>Fənn:</strong> {item.subject.name}</h5>
               <p><strong>Müəllim:</strong> {item.teacher.name}</p>
-              <button
-                className="btn btn-primary btn-sm mt-2"
-                onClick={() => goToJournal(item.subject.name)}
-              >
-                📖 Jurnalım
-              </button>
+              <div className="d-flex gap-2 mt-2">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => goToJournal(item.subject.name)}
+                >
+                  📖 Jurnalım
+                </button>
+                <button
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() => goToChat(item._id)} 
+                >
+                  💬 Chat
+                </button>
+              </div>
             </div>
           </div>
         ))}

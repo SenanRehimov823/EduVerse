@@ -1,6 +1,6 @@
 import Class from "../model/class.js";
 import User from "../model/user.js";
-import ClassGroupChat from "../model/classGroupChat.js";
+
 
 
 export const createClass = async (req, res) => {

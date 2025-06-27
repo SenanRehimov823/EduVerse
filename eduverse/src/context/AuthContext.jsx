@@ -5,8 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // səhifə yüklənərkən
-
+  const [loading, setLoading] = useState(true);
   const fetchUser = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/auth/me", {
@@ -14,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       });
       setUser(res.data.user);
     } catch (err) {
-      setUser(null); // token yanlışdırsa və ya giriş etməyibsə
+      setUser(null); 
     } finally {
       setLoading(false);
     }

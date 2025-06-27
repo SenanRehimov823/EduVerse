@@ -46,7 +46,7 @@ const JournalTable = () => {
         setError("");
       } catch {
         setJournal(null);
-        setError("Bu tarix üçün jurnal yoxdur");
+        setError("Bu tarix ün jurnal yoxdur");
       }
     };
     fetchJournal();
@@ -129,8 +129,7 @@ const JournalTable = () => {
         <div style={{ marginTop: "20px" }}>
           <h4>{journal.subject} jurnalı</h4>
           <p>
-            Mövzu: {journal.topic || "-"} | Tarix:{" "}
-            {new Date(journal.date).toLocaleDateString("az-AZ")}
+            Mövzu: {journal.topic || "-"} | Tarix: {new Date(journal.date).toLocaleDateString("az-AZ")}
           </p>
 
           <div style={{ marginTop: "15px" }}>
@@ -152,7 +151,7 @@ const JournalTable = () => {
           </p>
           {journal.homework?.file && (
             <p>
-              📎 Fayl:{" "}
+              📎 Fayl: {" "}
               <a
                 href={`http://localhost:5000${journal.homework.file}`}
                 target="_blank"
@@ -173,7 +172,8 @@ const JournalTable = () => {
             journalId={journal._id}
             students={journal.records.map((r) => r.student)}
           />
-<GradeHomeworkForm journal={journal} />
+          <GradeHomeworkForm journal={journal} />
+
           <table border="1" cellPadding="5">
             <thead>
               <tr>
@@ -222,8 +222,12 @@ const JournalTable = () => {
                   </td>
                   <td>
                     {r.homework?.file ? (
-                      <a href={r.homework.file} target="_blank" rel="noreferrer">
-                        Bax
+                      <a
+                        href={`http://localhost:5000${r.homework.file}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        📂 Bax
                       </a>
                     ) : (
                       "-"

@@ -14,6 +14,8 @@ import QuizResultDetails from "../components/quiz/QuizResultDetails";
 import StudentProfile from "../pages/studentPanel/StudentProfile";
 import MySubjects from "../pages/studentPanel/MySubjects";
 import MyJournal from "../pages/studentPanel/MyJournal";
+import ChatRoom from "../components/chat/ChatRoom";
+import ChatRoomWrapper from "../components/chat/ChatRoomWrapper";
 
 
 const Router = () => {
@@ -36,7 +38,8 @@ const Router = () => {
    <Route path="/student/subjects" element={<MySubjects />} />
  {/* <Route path="/student/journal/:subject" element={<MyJournal />} /> */}
  <Route path="/student/my-journals" element={<MyJournal />} />
-
+ 
+<Route path="/student/chat-room" element={<ChatRoomWrapper />} />
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"

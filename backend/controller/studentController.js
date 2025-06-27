@@ -14,13 +14,22 @@ export const getMySubjects = async (req, res) => {
     const lessons = await Lesson.find({ class: student.class._id }) 
       .populate("teacher", "name")
       .populate("subject", "name")
-      .select("subject teacher");
+      .select("subject teacher class");
 
-    res.status(200).json({ subjects: lessons });
+   
+    const formattedSubjects = lessons.map(lesson => ({
+       _id: lesson._id,
+      subject: lesson.subject,
+      teacher: lesson.teacher,
+      classId: lesson.class 
+    }));
+
+    res.status(200).json({ subjects: formattedSubjects });
   } catch (error) {
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
 
 
 

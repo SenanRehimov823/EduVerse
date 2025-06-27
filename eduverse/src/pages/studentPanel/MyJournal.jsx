@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router"; 
+import { useLocation } from "react-router";
 
 const MyJournal = () => {
   const [journals, setJournals] = useState([]);
+  const [homeworkFiles, setHomeworkFiles] = useState({});
   const location = useLocation();
   const subjectFromState = location.state?.subject || "";
   const [selectedSubject, setSelectedSubject] = useState(subjectFromState);
@@ -21,6 +22,30 @@ const MyJournal = () => {
     };
     fetchJournals();
   }, []);
+
+  const handleFileChange = (e, journalId) => {
+    setHomeworkFiles({ ...homeworkFiles, [journalId]: e.target.files[0] });
+  };
+
+  const handleSubmit = async (journalId) => {
+    if (!homeworkFiles[journalId]) return alert("Fayl seçilməyib");
+
+    const formData = new FormData();
+    formData.append("file", homeworkFiles[journalId]);
+    formData.append("journalId", journalId);
+
+    try {
+      await axios.post("http://localhost:5000/api/student/homework-submit", formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Tapşırıq göndərildi");
+      window.location.reload();
+    } catch (err) {
+      console.error("Tapşırıq göndərilmə xətası:", err);
+      alert("Xəta baş verdi");
+    }
+  };
 
   const filtered = journals.filter((j) => j.subject === selectedSubject);
 
@@ -44,7 +69,8 @@ const MyJournal = () => {
               <th>II Yarıil</th>
               <th>İllik nəticə</th>
               <th>Tapşırıq</th>
-              <th>Tapşırıq Qiyməti</th>
+              <th>Qiymət</th>
+              <th>Tapşırıq Göndər</th>
             </tr>
           </thead>
           <tbody>
@@ -75,19 +101,47 @@ const MyJournal = () => {
                 </td>
                 <td>{j.record?.final?.score ?? "-"} ({j.record?.final?.grade ?? "-"})</td>
                 <td>
-                  {j.record?.homework?.file ? (
-                    <a
-                      href={`http://localhost:5000${j.record.homework.file}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Bax
-                    </a>
-                  ) : (
-                    "-"
-                  )}
+                  <div>
+                    <strong>Müəllimin Tapşırığı:</strong><br />
+                    {j.homework?.text ? <p>{j.homework.text}</p> : <p>-</p>}
+                    {j.homework?.file && (
+                      <a
+                        href={`http://localhost:5000${j.homework.file}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        📎 Faylı Bax
+                      </a>
+                    )}
+                  </div>
+                  <hr />
+                  <div>
+                    <strong>Mənim Göndərdiyim:</strong><br />
+                    {j.record?.homework?.file ? (
+                      <a
+                        href={`http://localhost:5000${j.record.homework.file}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        📎 Bax
+                      </a>
+                    ) : (
+                      <span>-</span>
+                    )}
+                  </div>
                 </td>
-                <td>{j.record?.homework?.grade ?? "-"}</td>
+                <td>
+                  {j.record?.homework?.grade != null
+                    ? j.record.homework.grade
+                    : "Qiymətləndirilməyib"}
+                </td>
+                <td>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileChange(e, j._id)}
+                  />
+                  <button onClick={() => handleSubmit(j._id)}>Göndər</button>
+                </td>
               </tr>
             ))}
           </tbody>
