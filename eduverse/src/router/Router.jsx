@@ -16,6 +16,10 @@ import MySubjects from "../pages/studentPanel/MySubjects";
 import MyJournal from "../pages/studentPanel/MyJournal";
 import ChatRoom from "../components/chat/ChatRoom";
 import ChatRoomWrapper from "../components/chat/ChatRoomWrapper";
+import TeacherChatWrapper from "../components/chat/TeacherChatWrapper";
+import MergedChatWrapper from "../components/chat/MergedChatWrapper";
+import MergedChatRoom from "../components/chat/MergedChatRoom";
+import MergedChatPage from "../pages/teacherPanel/MergedChatPage";
 
 
 const Router = () => {
@@ -37,9 +41,14 @@ const Router = () => {
    <Route path="/student/profile" element={<StudentProfile />} />
    <Route path="/student/subjects" element={<MySubjects />} />
  {/* <Route path="/student/journal/:subject" element={<MyJournal />} /> */}
+ <Route path="/merged-chat" element={<MergedChatWrapper />} />
+ <Route path="/merged-chat-room" element={<MergedChatRoom/>} />
+
  <Route path="/student/my-journals" element={<MyJournal />} />
  
 <Route path="/student/chat-room" element={<ChatRoomWrapper />} />
+  <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
+  <Route path="/teacher/chat" element={<MergedChatPage />} />
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"

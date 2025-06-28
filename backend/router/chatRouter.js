@@ -3,7 +3,14 @@ import {
   sendMessageToLesson,
   getLessonMessages,
   editMessageFromLesson,
-  deleteMessageFromLesson
+  deleteMessageFromLesson,
+  sendMessageToTeacherChat,
+  getTeacherChatMessages,
+  getCombinedTeacherMessages,
+  getMergedMessages,
+  sendMergedMessage,
+  editMergedMessage,
+  deleteMergedMessage
 } from "../controller/chatMessageController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -21,4 +28,12 @@ router.put("/lesson/message/:messageId", authMiddleware, editMessageFromLesson);
 
 router.delete("/lesson/message/:messageId", authMiddleware, deleteMessageFromLesson);
 
+
+router.post("/send/teacher", authMiddleware, sendMessageToTeacherChat);
+router.get("/messages/teacher", authMiddleware, getTeacherChatMessages);
+router.get("/messages/combined", authMiddleware, getCombinedTeacherMessages);
+router.get("/merged", authMiddleware, getMergedMessages);
+router.post("/merged/send", authMiddleware, sendMergedMessage);
+router.put("/merged/message/:id", authMiddleware, editMergedMessage);
+router.delete("/merged/message/:id", authMiddleware, deleteMergedMessage);
 export default router;

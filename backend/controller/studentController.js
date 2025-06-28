@@ -9,26 +9,35 @@ import Subject from "../model/subject.js";
 export const getMySubjects = async (req, res) => {
   try {
     const studentId = req.user.id;
+
+    // Şagirdi tapıb sinfini yükləyirik
     const student = await User.findById(studentId).populate("class");
 
+    // O sinfə aid olan dərsləri tapırıq
     const lessons = await Lesson.find({ class: student.class._id }) 
       .populate("teacher", "name")
       .populate("subject", "name")
+      .populate("class", "grade section sector") // ✨ burada lazım olan hissələri yükləyirik
       .select("subject teacher class");
 
-   
+    // Formatlanmış cavab
     const formattedSubjects = lessons.map(lesson => ({
-       _id: lesson._id,
+      _id: lesson._id,
       subject: lesson.subject,
       teacher: lesson.teacher,
-      classId: lesson.class 
+      className: `${lesson.class.grade}${lesson.class.section || ""}${lesson.class.sector || ""}`, // ✨ sinif adı formatı
     }));
+
+    // Debug üçün log
+    console.log("🎓 Backenddən göndərilən fənlər:", formattedSubjects);
 
     res.status(200).json({ subjects: formattedSubjects });
   } catch (error) {
+    console.error("🚨 getMySubjects xətası:", error);
     res.status(500).json({ message: "Xəta baş verdi", error: error.message });
   }
 };
+
 
 
 

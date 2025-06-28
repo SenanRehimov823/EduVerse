@@ -14,7 +14,7 @@ const ChatRoomWrapper = () => {
         const res = await axios.get("http://localhost:5000/api/auth/me", {
           withCredentials: true,
         });
-        setCurrentUser(res.data.user); // _id, name gəlməlidir
+        setCurrentUser(res.data.user); 
       } catch (error) {
         console.error("İstifadəçi məlumatı alınmadı:", error);
       }

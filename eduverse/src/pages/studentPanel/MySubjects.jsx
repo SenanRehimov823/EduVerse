@@ -13,6 +13,7 @@ const MySubjects = () => {
         const res = await axios.get("http://localhost:5000/api/student/subjects", {
           withCredentials: true,
         });
+        console.log("🎓 Backenddən gələn fənlər:", res.data.subjects);
         setSubjects(res.data.subjects || []);
       } catch {
         setError("Fənlər yüklənmədi");
@@ -27,10 +28,13 @@ const MySubjects = () => {
     });
   };
 
-  const goToChat = (lessonId) => {
-    navigate("/student/chat-room", {
-      state: { lessonId },
-    });
+  const goToMergedChat = (subjectName, className) => {
+    if (!className) {
+      alert("Sinif adı tapılmadı!");
+      return;
+    }
+    console.log("🔗 Navigasiya edilir:", subjectName, className);
+    navigate(`/merged-chat-room?subject=${subjectName}&className=${className}`);
   };
 
   if (error) return <div className="alert alert-danger">{error}</div>;
@@ -44,6 +48,7 @@ const MySubjects = () => {
             <div className="card mb-3 p-3 shadow-sm">
               <h5><strong>Fənn:</strong> {item.subject.name}</h5>
               <p><strong>Müəllim:</strong> {item.teacher.name}</p>
+              <p><strong>Sinif:</strong> {item.className}</p>
               <div className="d-flex gap-2 mt-2">
                 <button
                   className="btn btn-primary btn-sm"
@@ -53,9 +58,9 @@ const MySubjects = () => {
                 </button>
                 <button
                   className="btn btn-outline-secondary btn-sm"
-                  onClick={() => goToChat(item._id)} 
+                  onClick={() => goToMergedChat(item.subject.name, item.className)}
                 >
-                  💬 Chat
+                  💬 Müştərək Chat
                 </button>
               </div>
             </div>
