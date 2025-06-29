@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { connectDb } from "./config/config.js";
 import ChatMessage from "./model/chatMessage.js";
 import TeacherChatMessage from "./model/TeacherChatMessage.js";
+import paymentRoutes from "./router/payment.js";
 
 // Routers
 import authRouter from "./router/authRouter.js";
@@ -19,6 +20,7 @@ import quizRouter from "./router/quizRouter.js";
 import quizResultRouter from "./router/quizResultRouter.js";
 import studentRouter from "./router/studentRouter.js";
 import chatRouter from "./router/chatRouter.js";
+import courseRoutes from "./router/course.js";
 
 dotenv.config();
 
@@ -63,7 +65,8 @@ app.use("/api/quiz", quizRouter);
 app.use("/api/quiz-result", quizResultRouter);
 app.use("/api/student", studentRouter);
 app.use("/chat", chatRouter);
-
+app.use("/api/course", courseRoutes);
+app.use("/api/payment", paymentRoutes);
 // ✅ Socket.IO event-lər
 io.on("connection", (socket) => {
   console.log("🔌 Yeni client qoşuldu:", socket.id);

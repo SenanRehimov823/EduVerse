@@ -277,3 +277,66 @@ export const getTeachersBySubject = async (req, res) => {
     res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
+export const sendPasswordResetOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) return res.status(404).json({ message: "İstifadəçi tapılmadı" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 10 * 60 * 1000; 
+
+    user.otp = otp;
+    user.otpExpires = expires;
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: '"EduVerse" <no-reply@eduverse.com>',
+      to: email,
+      subject: "Şifrəni Yenilə - OTP",
+      text: `OTP kodunuz: ${otp}`,
+      html: `<p>Şifrəni yeniləmək üçün OTP kodunuz: <strong>${otp}</strong></p>`,
+    });
+
+    res.status(200).json({ message: "OTP email ilə göndərildi" });
+  } catch (error) {
+    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+  }
+};
+export const resetPasswordWithOTP = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "İstifadəçi tapılmadı" });
+
+    if (user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: "OTP yanlışdır və ya vaxtı keçib" });
+    }
+
+    if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[!@#$%^&*]/.test(newPassword)) {
+      return res.status(400).json({
+        message: "Yeni şifrə minimum 8 simvol, 1 böyük hərf, 1 rəqəm və 1 xüsusi simvol içərməlidir",
+      });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Şifrə uğurla yeniləndi" });
+  } catch (error) {
+    res.status(500).json({ message: "Server xətası", error: error.message });
+  }
+};

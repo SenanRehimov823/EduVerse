@@ -20,6 +20,9 @@ import TeacherChatWrapper from "../components/chat/TeacherChatWrapper";
 import MergedChatWrapper from "../components/chat/MergedChatWrapper";
 import MergedChatRoom from "../components/chat/MergedChatRoom";
 import MergedChatPage from "../pages/teacherPanel/MergedChatPage";
+import AdminCoursesPanel from "../pages/adminPanel/AdminCoursesPanel";
+import PaymentSuccess from "../pages/PaymentSuccess";
+import PaymentCancel from "../pages/PaymentCancel";
 
 
 const Router = () => {
@@ -49,6 +52,9 @@ const Router = () => {
 <Route path="/student/chat-room" element={<ChatRoomWrapper />} />
   <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
   <Route path="/teacher/chat" element={<MergedChatPage />} />
+   <Route path="/admin/courses" element={<AdminCoursesPanel />} />
+   <Route path="/payment-success" element={<PaymentSuccess />} />
+<Route path="/payment-cancel" element={<PaymentCancel />} />
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"
