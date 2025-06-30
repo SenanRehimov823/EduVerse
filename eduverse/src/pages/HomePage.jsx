@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import CourseCard from "./CourseCard";
+import EduVerseFeatures from "./EduVerseFeatures";
+import FuturePlanets from "./FuturePlanets";
+import styles from "./HomePage.module.css"; // yeni css faylı
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
@@ -19,18 +22,24 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>EduVerse-ə xoş gəlmisiniz</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <Link to="/register-student">Şagird Qeydiyyatı</Link> | {" "}
-        <Link to="/register-teacher">Müəllim Qeydiyyatı</Link> | {" "}
-        <Link to="/login">Giriş</Link>
-      </div>
-      <h2>🎓 Kurslar</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "20px" }}>
-        {courses.map((course) => (
-          <CourseCard key={course._id} course={course} />
-        ))}
+    <div>
+      <EduVerseFeatures />
+      <FuturePlanets />
+
+      <div className={styles.wrapper}>
+        <h1 className={styles.heading}>EduVerse-ə xoş gəlmisiniz</h1>
+        <div className={styles.links}>
+          <Link to="/register-student">Şagird Qeydiyyatı</Link> |{" "}
+          <Link to="/register-teacher">Müəllim Qeydiyyatı</Link> |{" "}
+          <Link to="/login">Giriş</Link>
+        </div>
+
+        <h2 className={styles.subheading}>🎓 Kurslar</h2>
+        <div className={styles.courseGrid}>
+          {courses.map((course) => (
+            <CourseCard key={course._id} course={course} />
+          ))}
+        </div>
       </div>
     </div>
   );

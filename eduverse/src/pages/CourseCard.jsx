@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./CourseCard.module.css"; // CSS Module istifadə edilir
 
 const CourseCard = ({ course }) => {
   if (!course) return null;
@@ -24,39 +25,16 @@ const CourseCard = ({ course }) => {
 
   const imageSrc = course.imageFile
     ? `http://localhost:5000/uploads/${course.imageFile}`
-    : course.imageUrl || "/default-course.jpg"; // fallback varsa
+    : course.imageUrl || "/default-course.jpg";
 
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        overflow: "hidden",
-        background: "#fff",
-      }}
-    >
-      <img
-        src={imageSrc}
-        alt={course.title || "Kurs şəkli"}
-        style={{ width: "100%", height: "200px", objectFit: "cover" }}
-      />
-      <div style={{ padding: "15px" }}>
-        <h4>{course.title}</h4>
-        <p>{course.description}</p>
-        <p><strong>{course.price} USD</strong></p>
-        <button
-          onClick={handleBuy}
-          style={{
-            backgroundColor: "#2563eb",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          💳 Satın Al
-        </button>
+    <div className={styles.courseCard}>
+      <img src={imageSrc} alt={course.title} className={styles.courseImage} />
+      <div className={styles.courseBody}>
+        <h4 className={styles.courseTitle}>{course.title}</h4>
+        <p className={styles.courseDesc}>✅ {course.description}</p>
+        <p className={styles.coursePrice}>{course.price} USD</p>
+        <button onClick={handleBuy} className={styles.buyBtn}>Satın Al</button>
       </div>
     </div>
   );

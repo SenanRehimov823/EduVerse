@@ -1,0 +1,83 @@
+.futureSection {
+  padding: 60px 20px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.subheading {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.imageWrapper {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.image {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Mouse hover zamanı öz ətrafında 360° fırlanma */
+.imageWrapper:hover .image {
+  animation: rotatePlanet 3s linear infinite;
+}
+
+@keyframes rotatePlanet {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
