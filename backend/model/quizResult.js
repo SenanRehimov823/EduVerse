@@ -15,7 +15,7 @@ const quizResultSchema = new mongoose.Schema({
     {
       question: String,
       questionIndex: Number, 
-      selectedOptions: [Number], 
+      selectedOptions: [String], 
     },
   ],
   score: {

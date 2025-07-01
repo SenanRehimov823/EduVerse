@@ -23,6 +23,10 @@ import MergedChatPage from "../pages/teacherPanel/MergedChatPage";
 import AdminCoursesPanel from "../pages/adminPanel/AdminCoursesPanel";
 import PaymentSuccess from "../pages/PaymentSuccess";
 import PaymentCancel from "../pages/PaymentCancel";
+import StudentDashboard from "../pages/studentPanel/StudentDashboard";
+import StudentActiveQuizzes from "../pages/studentPanel/StudentActiveQuizzes";
+import TakeQuiz from "../pages/studentPanel/TakeQuiz";
+import StudentQuizResult from "../pages/studentPanel/StudentQuizResult";
 
 
 const Router = () => {
@@ -43,18 +47,24 @@ const Router = () => {
    <Route path="/teacher/quiz/:quizId/results" element={<QuizResultDetails />} />
    <Route path="/student/profile" element={<StudentProfile />} />
    <Route path="/student/subjects" element={<MySubjects />} />
- {/* <Route path="/student/journal/:subject" element={<MyJournal />} /> */}
+ 
  <Route path="/merged-chat" element={<MergedChatWrapper />} />
  <Route path="/merged-chat-room" element={<MergedChatRoom/>} />
 
  <Route path="/student/my-journals" element={<MyJournal />} />
  
 <Route path="/student/chat-room" element={<ChatRoomWrapper />} />
+<Route path="/student/dashboard" element={<StudentDashboard />} />
+
   <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
   <Route path="/teacher/chat" element={<MergedChatPage />} />
    <Route path="/admin/courses" element={<AdminCoursesPanel />} />
    <Route path="/payment-success" element={<PaymentSuccess />} />
 <Route path="/payment-cancel" element={<PaymentCancel />} />
+<Route path="/student/quiz-active" element={<StudentActiveQuizzes />} />
+<Route path="/student/quiz/:quizId" element={<TakeQuiz />} />
+<Route path="/student/quiz-result/:quizId" element={<StudentQuizResult/>} />
+
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"

@@ -5,7 +5,8 @@ import {
   getQuizzesByTeacher,
   deleteQuiz,
   getAvailableQuizzesForStudent,
-  updateQuiz
+  updateQuiz,
+  getQuizById
 } from "../controller/quizController.js";
 
 const router = express.Router();
@@ -15,4 +16,5 @@ router.get("/my-quizzes", authMiddleware, getQuizzesByTeacher);
 router.delete("/:id", authMiddleware, deleteQuiz); 
 router.get("/available", authMiddleware, getAvailableQuizzesForStudent); 
 router.put("/:id", authMiddleware, updateQuiz);
+router.get("/:quizId", authMiddleware, getQuizById);
 export default router;

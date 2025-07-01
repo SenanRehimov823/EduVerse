@@ -96,7 +96,7 @@ const ChatRoom = ({ lessonId, currentUser }) => {
 
   return (
     <div className="container p-3 border rounded shadow">
-      <h5 className="mb-3">💬 Dərs Çatı</h5>
+      <h5 className="mb-3">💬Sinif chati</h5>
       <div className="chat-box border rounded p-3 mb-3" style={{ height: "400px", overflowY: "auto" }}>
         {messages.map((msg) => (
           <div key={msg._id} className="mb-3">

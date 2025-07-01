@@ -3,10 +3,15 @@ import QuizResult from "../model/quizResult.js";
 import Class from "../model/class.js";
 import User from "../model/user.js";
 
+
+
 export const submitQuiz = async (req, res) => {
   try {
     const studentId = req.user.id;
     const { quizId, answers } = req.body;
+
+    console.log("📩 Gələn quizId:", quizId);
+    console.log("📥 Gələn cavablar:", answers);
 
     const quiz = await Quiz.findById(quizId);
     if (!quiz) return res.status(404).json({ message: "Quiz tapılmadı" });
@@ -20,18 +25,25 @@ export const submitQuiz = async (req, res) => {
     if (existing) return res.status(400).json({ message: "Artıq təqdim etmisiniz" });
 
     let score = 0;
+
     const answerMapping = quiz.questions.map((q, idx) => {
       const userAnswer = answers.find(a => a.questionIndex === idx);
-      const selected = userAnswer ? userAnswer.selectedOptions : [];
-      
-      const correct = JSON.stringify(selected.sort()) === JSON.stringify(q.correctAnswers.sort());
-      if (correct) score += 1;
+      const selected = userAnswer ? userAnswer.selectedOptions.map(s => s.trim()) : [];
+      const correct = q.correctAnswers.map(a => a.trim());
+
+      const isCorrect = selected.sort().join(",") === correct.sort().join(",");
+      if (isCorrect) score += 1;
+
       return {
         question: q.question,
-        questionIndex: idx, 
-        selectedOptions: selected
+        questionIndex: idx,
+        selectedOptions: selected,
+        correctAnswers: correct, // ✅ Bunu əlavə edirik!
       };
     });
+
+    console.log("✅ Yekun bal:", score);
+    console.log("📊 Cavab xəritəsi:", answerMapping);
 
     const result = await QuizResult.create({
       quiz: quizId,
@@ -43,25 +55,39 @@ export const submitQuiz = async (req, res) => {
 
     res.status(201).json({ message: "Quiz təqdim edildi", result });
   } catch (error) {
+    console.error("❌ Server xətası:", error);
     res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
+
+
 export const getResultsByQuizIdForTeacher = async (req, res) => {
   try {
     const { quizId } = req.params;
     const teacherId = req.user.id;
 
-    console.log("teacherId", teacherId);
-    console.log("quizId", quizId);
+    console.log("🧑‍🏫 teacherId from token:", teacherId);
+    console.log("📩 Requested quizId:", quizId);
 
     const quiz = await Quiz.findById(quizId);
-    if (!quiz || quiz.teacher.toString() !== teacherId) {
+    if (!quiz) {
+      console.log("❌ Quiz tapılmadı:", quizId);
+      return res.status(404).json({ message: "Quiz tapılmadı" });
+    }
+
+    console.log("📌 quiz.teacher:", quiz.teacher);
+    console.log("📌 String(quiz.teacher):", String(quiz.teacher));
+    console.log("📌 String(teacherId):", String(teacherId));
+    console.log("📌 Eynilik yoxlanışı:", String(quiz.teacher) === String(teacherId));
+
+    if (String(quiz.teacher) !== String(teacherId)) {
+      console.log("❌ Bu quiz bu müəllimə aid deyil!");
       return res.status(403).json({ message: "Bu quiz sizin deyil" });
     }
 
     const classObj = await Class.findById(quiz.classId).populate("students", "name");
     if (!classObj) {
-      console.log("Sinif tapılmadı:", quiz.classId);
+      console.log("❌ Sinif tapılmadı:", quiz.classId);
       return res.status(404).json({ message: "Sinif tapılmadı" });
     }
 

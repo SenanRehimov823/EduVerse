@@ -17,7 +17,7 @@ const quizSchema = new mongoose.Schema({
     {
       question: String,
       options: [String],
-      correctAnswers: [Number], 
+      correctAnswers: [String], 
     }
   ],
   deadline: {

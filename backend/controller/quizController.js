@@ -91,3 +91,13 @@ export const updateQuiz = async (req, res) => {
     res.status(500).json({ message: "Server xətası", error: error.message });
   }
 };
+export const getQuizById = async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.quizId);
+    if (!quiz) return res.status(404).json({ message: "Quiz tapılmadı" });
+
+    res.status(200).json({ quiz });
+  } catch (err) {
+    res.status(500).json({ message: "Xəta baş verdi", error: err.message });
+  }
+};

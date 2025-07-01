@@ -35,17 +35,29 @@ const CreateQuizForm = () => {
   const handleOptionChange = (qIndex, oIndex, value) => {
     const updated = [...form.questions];
     updated[qIndex].options[oIndex] = value;
+
+    // Eyni zamanda correctAnswers-i də yenilə
+    const currentCorrects = updated[qIndex].correctAnswers;
+    const oldValue = form.questions[qIndex].options[oIndex];
+
+    updated[qIndex].correctAnswers = currentCorrects.map((ans) =>
+      ans === oldValue ? value : ans
+    );
+
     setForm({ ...form, questions: updated });
   };
 
   const toggleCorrectAnswer = (qIndex, oIndex) => {
     const updated = [...form.questions];
+    const optionValue = updated[qIndex].options[oIndex]; // ✅ real dəyəri götür
     const current = updated[qIndex].correctAnswers;
-    if (current.includes(oIndex)) {
-      updated[qIndex].correctAnswers = current.filter((i) => i !== oIndex);
+
+    if (current.includes(optionValue)) {
+      updated[qIndex].correctAnswers = current.filter((val) => val !== optionValue);
     } else {
-      updated[qIndex].correctAnswers.push(oIndex);
+      updated[qIndex].correctAnswers.push(optionValue);
     }
+
     setForm({ ...form, questions: updated });
   };
 
@@ -135,7 +147,7 @@ const CreateQuizForm = () => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={q.correctAnswers.includes(oIndex)}
+                    checked={q.correctAnswers.includes(opt)}
                     onChange={() => toggleCorrectAnswer(qIndex, oIndex)}
                   />
                   Doğru cavab
@@ -146,11 +158,11 @@ const CreateQuizForm = () => {
         ))}
 
         <button type="button" onClick={addQuestion}>
-          Sual əlavə et
+          ➕ Sual əlavə et
         </button>
 
         <button type="submit" style={{ marginTop: "15px" }}>
-          Quiz yarat
+          ✅ Quiz yarat
         </button>
       </form>
     </div>
