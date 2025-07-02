@@ -1,0 +1,126 @@
+.container {
+  padding: 40px 30px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fefefe;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #007bff;
+}
+
+.select,
+.dateInput,
+.topicUpdate input {
+  width: 100%;
+  max-width: 350px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.select:focus,
+.dateInput:focus,
+.topicUpdate input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.error {
+  color: red;
+  margin-bottom: 15px;
+}
+
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.journalBox {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+.topicUpdate {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.topicUpdate button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.topicUpdate button:hover {
+  background-color: #1e7e34;
+}
+
+.journalTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  font-size: 14px;
+}
+
+.journalTable th,
+.journalTable td {
+  border: 1px solid #ddd;
+  padding: 12px 10px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.journalTable th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+}
+
+.journalTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.journalTable a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.journalTable a:hover {
+  text-decoration: underline;
+}

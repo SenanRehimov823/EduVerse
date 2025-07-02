@@ -1,0 +1,111 @@
+.journalContainer {
+  padding: 30px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.journalTitle {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.subjectName {
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: #2563eb;
+}
+
+.journalTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  table-layout: auto;
+}
+
+.journalTable th,
+.journalTable td {
+  padding: 14px 18px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+.journalTable th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.journalTable td a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.journalTable td a:hover {
+  text-decoration: underline;
+}
+
+.homeworkSection {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.uploadBtn {
+  padding: 8px 16px;
+  background-color: #22c55e;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.uploadBtn:hover {
+  background-color: #16a34a;
+}
+
+.fileInput {
+  margin-top: 8px;
+}
+
+.gradeTag {
+  font-weight: bold;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.noData {
+  margin-top: 20px;
+  color: #6b7280;
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .journalTitle {
+    font-size: 24px;
+  }
+
+  .journalTable th,
+  .journalTable td {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .uploadBtn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}

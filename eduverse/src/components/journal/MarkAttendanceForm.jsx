@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./MarkAttendanceForm.module.css";
 
 const MarkAttendanceForm = ({ journalId, students, setJournal }) => {
   const [attendance, setAttendance] = useState({});
@@ -12,22 +13,16 @@ const MarkAttendanceForm = ({ journalId, students, setJournal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updates = Object.entries(attendance).map(async ([studentId, status]) => {
-        return axios.patch(
+      const updates = Object.entries(attendance).map(([studentId, status]) =>
+        axios.patch(
           "http://localhost:5000/api/journal/attendance",
-          {
-            journalId,
-            studentId,
-            status,
-          },
+          { journalId, studentId, status },
           { withCredentials: true }
-        );
-      });
-
-      const results = await Promise.all(updates);
+        )
+      );
+      await Promise.all(updates);
       setMessage("İştirak uğurla qeyd edildi");
 
-      // Lokalda jurnalı yenilə
       if (setJournal) {
         setJournal((prevJournal) => {
           const updatedRecords = prevJournal.records.map((r) => {
@@ -55,9 +50,9 @@ const MarkAttendanceForm = ({ journalId, students, setJournal }) => {
   }, [students]);
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "30px" }}>
-      <h4>İştirak Qeydiyyatı</h4>
-      <table border="1" cellPadding="5">
+    <form onSubmit={handleSubmit} className={styles.attendanceForm}>
+      <h4 className={styles.title}>İştirak Qeydiyyatı</h4>
+      <table className={styles.attendanceTable}>
         <thead>
           <tr>
             <th>Şagird</th>
@@ -70,6 +65,7 @@ const MarkAttendanceForm = ({ journalId, students, setJournal }) => {
               <td>{s.name}</td>
               <td>
                 <select
+                  className={styles.selectBox}
                   value={attendance[s._id] || ""}
                   onChange={(e) => handleChange(s._id, e.target.value)}
                 >
@@ -83,8 +79,10 @@ const MarkAttendanceForm = ({ journalId, students, setJournal }) => {
         </tbody>
       </table>
 
-      <button type="submit">Təsdiqlə</button>
-      {message && <p>{message}</p>}
+      <button type="submit" className={styles.button}>
+        Təsdiqlə
+      </button>
+      {message && <p className={styles.message}>{message}</p>}
     </form>
   );
 };

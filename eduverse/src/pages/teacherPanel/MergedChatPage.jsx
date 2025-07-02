@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import MergedChat from "../../components/chat/MergedChat"; // Chat komponentinin yolu düz olsun
+import MergedChat from "../../components/chat/MergedChat";
+import styles from "./MergedChatPage.module.css";
 
 const MergedChatPage = ({ currentUser }) => {
   const [lessons, setLessons] = useState([]);
@@ -14,7 +15,7 @@ const MergedChatPage = ({ currentUser }) => {
           withCredentials: true,
         });
         setLessons(res.data.lessons || []);
-      } catch (err) {
+      } catch {
         setError("Dərsləri yükləmək mümkün olmadı");
       }
     };
@@ -27,13 +28,14 @@ const MergedChatPage = ({ currentUser }) => {
   };
 
   return (
-    <div className="container mt-4">
-      <h4>📚 Müəllim Paneli – Müştərək Chat</h4>
-      {error && <p className="text-danger">{error}</p>}
+    <div className={styles.chatPage}>
+      <h2 className={styles.title}>📚 Müəllim Paneli – Müştərək Chat</h2>
 
-      <div className="form-group mb-4">
-        <label>Dərs seçin:</label>
-        <select className="form-control" onChange={handleSelect} defaultValue="">
+      {error && <div className={styles.error}>{error}</div>}
+
+      <div className={styles.selector}>
+        <label className={styles.label}>Dərs seçin:</label>
+        <select className={styles.select} onChange={handleSelect} defaultValue="">
           <option value="" disabled>Fənn və sinif seçin</option>
           {lessons.map((lesson) => (
             <option

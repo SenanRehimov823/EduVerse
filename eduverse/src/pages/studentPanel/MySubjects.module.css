@@ -1,0 +1,97 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.title {
+  font-size: 2.2rem;
+  text-align: center;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: linear-gradient(145deg, #ffffff, #f3f4f6);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size:30px;
+  color: #475569;
+  margin: 6px 0;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.journalBtn, .chatBtn {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.journalBtn {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.journalBtn:hover {
+  background-color: #2563eb;
+}
+
+.chatBtn {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+.chatBtn:hover {
+  background-color: #e2e8f0;
+}
+
+.icon {
+  margin-right: 6px;
+  font-size: 1.2rem;
+}
+
+.error {
+  text-align: center;
+  color: #dc2626;
+  font-size: 1.1rem;
+  margin-top: 30px;
+  font-weight: bold;
+}

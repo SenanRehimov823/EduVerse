@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./StudentProfile.module.css";
+import { FiLogOut, FiTrash2, FiEdit3 } from "react-icons/fi";
 
 const StudentProfile = () => {
   const [profile, setProfile] = useState(null);
@@ -84,31 +86,28 @@ const StudentProfile = () => {
   if (!profile) return <p>Yüklənir...</p>;
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">👤 Şagird Profilim</h2>
-      <div className="card p-4 shadow-sm">
-        <div className="row align-items-center">
-          <div className="col-md-3 text-center">
-            <img
-              src={`http://localhost:5000${profile.image}`}
-              alt="Profil şəkli"
-              className="img-fluid rounded-circle"
-              style={{ maxWidth: "150px", height: "150px", objectFit: "cover" }}
-            />
-            <form onSubmit={handleImageUpload} className="mt-3">
-              <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} className="form-control mb-2" />
-              <button type="submit" className="btn btn-primary btn-sm">📤 Şəkli Yenilə</button>
-              {uploadStatus && <p className="mt-2 small">{uploadStatus}</p>}
-            </form>
-          </div>
-          <div className="col-md-9">
-            <p><strong>Ad:</strong> {profile.name}</p>
-            <p><strong>Soyad:</strong> {profile.surname}</p>
-            <p><strong>Email:</strong> {profile.email}</p>
-            <p><strong>Sinif:</strong> {profile.className}</p>
-            <p><strong>Rolu:</strong> {profile.role}</p>
-          </div>
+    <div className={styles.container}>
+      <h2>👤 Şagird Profilim</h2>
+      <div className={styles.card}>
+        <div className={styles.row}>
+          <img
+            src={`http://localhost:5000${profile.image}`}
+            alt="Profil şəkli"
+            className={styles.imgFluid}
+          />
+          <form onSubmit={handleImageUpload}>
+            <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} className="form-control mb-2" />
+            <button type="submit" className="btn btn-primary btn-sm">📤 Şəkli Yenilə</button>
+            {uploadStatus && <p className={styles.mt2}>{uploadStatus}</p>}
+          </form>
         </div>
+
+        <hr />
+        <p><strong>Ad:</strong> {profile.name}</p>
+        <p><strong>Soyad:</strong> {profile.surname}</p>
+        <p><strong>Email:</strong> {profile.email}</p>
+        <p><strong>Sinif:</strong> {profile.className}</p>
+        <p><strong>Rolu:</strong> {profile.role}</p>
 
         <hr />
         <h5>🔐 Şifrəni Dəyiş</h5>
@@ -119,18 +118,24 @@ const StudentProfile = () => {
           <input type="password" placeholder="Yeni şifrə" className="form-control mb-2"
             value={passwordData.newPassword}
             onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
-          <button type="submit" className="btn btn-warning btn-sm">🔁 Dəyiş</button>
-          {passwordStatus && <p className="mt-2 small">{passwordStatus}</p>}
+          <button type="submit" className={`btn ${styles.updateBtn} ${styles.iconBtn}`}>
+            <FiEdit3 /> Dəyiş
+          </button>
+          {passwordStatus && <p className={styles.mt2}>{passwordStatus}</p>}
         </form>
 
         <hr />
-        <h5>❌ Hesabı Sil</h5>
-        <button onClick={handleDeleteAccount} className="btn btn-danger btn-sm">Sil və Çıxış</button>
-        {deleteStatus && <p className="mt-2 small">{deleteStatus}</p>}
+        <h5> Hesabı Sil</h5>
+        <button onClick={handleDeleteAccount} className={`btn ${styles.deleteBtn} ${styles.iconBtn}`}>
+          <FiTrash2 /> Hesabı Sil
+        </button>
+        {deleteStatus && <p className={styles.mt2}>{deleteStatus}</p>}
 
         <hr />
-        <h5>🚪 Çıxış Et</h5>
-        <button onClick={handleLogout} className="btn btn-secondary btn-sm">Çıxış</button>
+        <h5> Çıxış Et</h5>
+        <button onClick={handleLogout} className={`btn ${styles.logoutBtn} ${styles.iconBtn}`}>
+          <FiLogOut /> Çıxış
+        </button>
       </div>
     </div>
   );

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/AuthContext"; 
+import { useAuth } from "../../context/AuthContext";
+import { FaComments, FaArrowRight } from "react-icons/fa";
+import styles from "./StudentDashboard.module.css";
 
 const StudentDashboard = () => {
   const [lessonId, setLessonId] = useState(null);
@@ -33,18 +35,21 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">👋 Xoş gəldin, {user?.name}</h2>
+    <div className={styles.dashboardWrapper}>
+      <h2 className={styles.welcomeText}>👋 Xoş gəldin, {user?.name}</h2>
 
-      <div className="card p-4 shadow-sm mb-4">
-        <h5 className="mb-3">💬 Sinif Çatı</h5>
-        <p>Burada sinif yoldaşlarınla yazışa bilərsən.</p>
+      <div className={styles.cardBox}>
+        <div className={styles.cardHeader}>
+          <FaComments className={styles.icon} />
+          <h5>Sinif Çatı</h5>
+        </div>
+        <p className={styles.cardText}>Burada sinif yoldaşlarınla yazışa bilərsən.</p>
         <button
-          className="btn btn-success"
+          className={styles.chatBtn}
           onClick={goToClassChat}
           disabled={!lessonId}
         >
-          Sinif Çatına keç
+          Sinif Çatına keç <FaArrowRight className="ms-2" />
         </button>
       </div>
     </div>

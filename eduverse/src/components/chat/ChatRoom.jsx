@@ -1,14 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import socket from "../../socket";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import styles from "./ChatRoom.module.css";
+import { FaEdit, FaTrash, FaPaperPlane } from "react-icons/fa";
 
 const ChatRoom = ({ lessonId, currentUser }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [editingMessageId, setEditingMessageId] = useState(null);
   const [editedText, setEditedText] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode === "true") setDarkMode(true);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -18,7 +29,7 @@ const ChatRoom = ({ lessonId, currentUser }) => {
         });
         setMessages(res.data.messages);
       } catch (error) {
-        console.error("Mesajları yükləmək olmadı:", error);
+        console.error("Mesajlar yüklənə bilmədi:", error);
       }
     };
     fetchMessages();
@@ -57,12 +68,12 @@ const ChatRoom = ({ lessonId, currentUser }) => {
     }
   };
 
-  const handleDelete = async (messageId) => {
+  const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/chat/lesson/message/${messageId}`, {
+      await axios.delete(`http://localhost:5000/chat/lesson/message/${id}`, {
         withCredentials: true,
       });
-      setMessages((prev) => prev.filter((m) => m._id !== messageId));
+      setMessages((prev) => prev.filter((m) => m._id !== id));
     } catch (error) {
       console.error("Silinmə xətası:", error);
     }
@@ -86,88 +97,79 @@ const ChatRoom = ({ lessonId, currentUser }) => {
     }
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getHours().toString().padStart(2, "0")}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+  const formatTime = (date) => {
+    const d = new Date(date);
+    return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
   };
 
   return (
-    <div className="container p-3 border rounded shadow">
-      <h5 className="mb-3">💬Sinif chati</h5>
-      <div className="chat-box border rounded p-3 mb-3" style={{ height: "400px", overflowY: "auto" }}>
+    <div className={`${styles.chatWrapper} ${darkMode ? styles.dark : styles.light}`}>
+      <div className={styles.chatHeader}>
+        Sinif Chati
+        <button className={styles.toggleBtn} onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? "☀️" : "🌙"}
+        </button>
+      </div>
+
+      <div className={styles.chatBody}>
         {messages.map((msg) => (
-          <div key={msg._id} className="mb-3">
-            <div>
+          <div
+            key={msg._id}
+            className={`${styles.messageRow} ${
+              msg.sender?._id === currentUser._id ? styles.sent : styles.received
+            }`}
+          >
+            <div className={styles.messageBubble}>
               <strong>{msg.sender?.name || "Anonim"}:</strong>{" "}
               {editingMessageId === msg._id ? (
-                <InputGroup className="mt-1">
-                  <Form.Control
+                <>
+                  <input
+                    className={styles.editInput}
                     value={editedText}
                     onChange={(e) => setEditedText(e.target.value)}
-                    size="sm"
                     onKeyDown={(e) => e.key === "Enter" && handleEdit()}
                   />
-                  <Button variant="success" size="sm" onClick={handleEdit}>
-                    ✅
-                  </Button>
-                  <Button variant="secondary" size="sm" onClick={() => setEditingMessageId(null)}>
-                    ❌
-                  </Button>
-                </InputGroup>
+                  <div className={styles.actions}>
+                    <FaEdit onClick={handleEdit} />
+                    <FaTrash onClick={() => setEditingMessageId(null)} />
+                  </div>
+                </>
               ) : (
                 <>
                   {msg.message}
                   {msg.sender?._id === currentUser._id && (
-                    <>
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="text-danger ms-2 p-0"
-                        onClick={() => handleDelete(msg._id)}
-                      >
-                        Sil
-                      </Button>
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="text-primary ms-1 p-0"
+                    <div className={styles.actions}>
+                      <FaEdit
                         onClick={() => {
                           setEditingMessageId(msg._id);
                           setEditedText(msg.message);
                         }}
-                      >
-                        Redaktə
-                      </Button>
-                    </>
+                      />
+                      <FaTrash onClick={() => handleDelete(msg._id)} />
+                    </div>
                   )}
                 </>
               )}
+              <div className={styles.messageMeta}>{formatTime(msg.createdAt)}</div>
             </div>
-            <small className="text-muted">{formatTime(msg.createdAt)}</small>
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      <InputGroup>
-        <Form.Control
+      <div className={styles.chatInput}>
+        <input
           value={editingMessageId ? editedText : newMessage}
           onChange={(e) =>
             editingMessageId ? setEditedText(e.target.value) : setNewMessage(e.target.value)
           }
           placeholder="Mesajınızı yazın..."
-          onKeyDown={(e) =>
-            e.key === "Enter" &&
-            (editingMessageId ? handleEdit() : handleSend())
-          }
+          onKeyDown={(e) => e.key === "Enter" && (editingMessageId ? handleEdit() : handleSend())}
         />
-        <Button variant="primary" onClick={editingMessageId ? handleEdit : handleSend}>
-          {editingMessageId ? "Redaktəni Təsdiqlə" : "Göndər"}
-        </Button>
-      </InputGroup>
+        <button onClick={editingMessageId ? handleEdit : handleSend}>
+          <FaPaperPlane />
+        </button>
+      </div>
     </div>
   );
 };

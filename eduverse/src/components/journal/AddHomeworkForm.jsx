@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import styles from "./AddHomeworkForm.module.css";
+import { FaTasks } from "react-icons/fa";
 
 const AddHomeworkForm = ({ journalId }) => {
   const [text, setText] = useState("");
@@ -36,18 +38,26 @@ const AddHomeworkForm = ({ journalId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: "20px" }}>
-      <h4>📚 Tapşırıq Əlavə Et</h4>
+    <form onSubmit={handleSubmit} className={styles.formBox}>
+      <h4 className={styles.sectionTitle}>
+        <FaTasks /> Tapşırıq Əlavə Et
+      </h4>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Tapşırıq mətni"
         rows="3"
-        style={{ width: "100%", marginBottom: "10px" }}
+        className={styles.textarea}
       />
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button type="submit">Əlavə et</button>
-      {message && <p>{message}</p>}
+      <input
+        type="file"
+        className={styles.fileInput}
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <button type="submit" className={styles.button}>
+        Əlavə et
+      </button>
+      {message && <p className={styles.message}>{message}</p>}
     </form>
   );
 };

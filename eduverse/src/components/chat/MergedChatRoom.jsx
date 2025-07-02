@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import axios from "axios";
 import MergedChat from "./MergedChat";
+import styles from "./MergedChatRoom.module.css";
 
 const MergedChatRoom = () => {
   const { search, state } = useLocation();
@@ -21,8 +22,6 @@ const MergedChatRoom = () => {
         const subjectParam = params.get("subject");
         const classParam = params.get("className");
 
-        console.log("🌐 URL ilə alınan subject və class:", subjectParam, classParam);
-
         if (subjectParam && classParam) {
           setSubject(subjectParam);
           setClassName(classParam);
@@ -31,24 +30,21 @@ const MergedChatRoom = () => {
             `http://localhost:5000/api/lesson/${state.lessonId}`,
             { withCredentials: true }
           );
-          console.log("📦 Lesson məlumatı:", lessonRes.data);
           setSubject(lessonRes.data.subject);
           setClassName(lessonRes.data.className);
         }
-      } catch (error) {
-        console.error("İstifadəçi və ya dərs məlumatı alınmadı:", error);
-      }
+      } catch {}
     };
 
     fetchUserAndLesson();
   }, [search, state]);
 
   if (!subject || !className) {
-    return <div className="alert alert-danger">Fənn və sinif məlumatı tapılmadı.</div>;
+    return <div className={styles.alertDanger}>Fənn və sinif məlumatı tapılmadı.</div>;
   }
 
   if (!currentUser) {
-    return <div className="alert alert-info">İstifadəçi yüklənir...</div>;
+    return <div className={styles.alertInfo}>İstifadəçi yüklənir...</div>;
   }
 
   return (

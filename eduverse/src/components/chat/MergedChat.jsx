@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import socket from "../../socket";
 import axios from "axios";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import styles from "./MergedChat.module.css";
+import { FaEdit, FaTrash, FaMoon, FaSun } from "react-icons/fa";
 
 const MergedChat = ({ subject, className, currentUser }) => {
   const roomKey = `${subject}_${className}`;
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [editId, setEditId] = useState(null);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("mergedChatDark") === "true"
+  );
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -18,9 +22,7 @@ const MergedChat = ({ subject, className, currentUser }) => {
           { withCredentials: true }
         );
         setMessages(res.data.messages || []);
-      } catch (err) {
-        console.error("Mesajlar yüklənmədi:", err);
-      }
+      } catch {}
     };
     fetchMessages();
   }, [subject, className]);
@@ -72,9 +74,7 @@ const MergedChat = ({ subject, className, currentUser }) => {
         socket.emit("sendMergedMessage", { roomKey, message: res.data.message });
       }
       setNewMessage("");
-    } catch (err) {
-      console.error("Mesaj göndərilə bilmədi:", err);
-    }
+    } catch {}
   };
 
   const handleDelete = async (id) => {
@@ -83,9 +83,7 @@ const MergedChat = ({ subject, className, currentUser }) => {
         withCredentials: true,
       });
       socket.emit("deleteMergedMessage", { roomKey, messageId: id });
-    } catch (err) {
-      console.error("Silinmədi:", err);
-    }
+    } catch {}
   };
 
   const formatTime = (dateString) => {
@@ -96,10 +94,25 @@ const MergedChat = ({ subject, className, currentUser }) => {
       .padStart(2, "0")}`;
   };
 
+  const toggleTheme = () => {
+    setDarkMode((prev) => {
+      localStorage.setItem("mergedChatDark", !prev);
+      return !prev;
+    });
+  };
+
   return (
-    <div className="container p-3 border rounded shadow">
-      <h5 className="mb-3">🧑‍🏫 Müştərək Chat ({subject} / {className})</h5>
-      <div className="chat-box border rounded p-3 mb-3" style={{ height: "400px", overflowY: "auto" }}>
+    <div
+      className={`${styles.chatWrapper} ${darkMode ? styles.dark : styles.light}`}
+    >
+      <div className={styles.chatHeader}>
+        <h5>🧑‍🏫 Chat ({subject}/{className})</h5>
+        <button className={styles.themeToggle} onClick={toggleTheme}>
+          {darkMode ? <FaSun /> : <FaMoon />}
+        </button>
+      </div>
+
+      <div className={styles.chatBox}>
         {messages.map((msg) => {
           const senderId = msg?.sender?._id?.toString();
           const myId = currentUser?._id?.toString();
@@ -108,26 +121,31 @@ const MergedChat = ({ subject, className, currentUser }) => {
           return (
             <div
               key={msg._id}
-              className={`mb-3 p-2 rounded ${isMine ? "bg-primary text-white text-end ms-auto" : "bg-light text-start me-auto"}`}
-              style={{ maxWidth: "70%" }}
+              className={`${styles.chatMessage} ${
+                isMine ? styles.mine : styles.theirs
+              }`}
             >
-              <div>
-                <strong>{msg?.sender?.name || "İstifadəçi"}</strong>
-              </div>
-              <div>
+              <div className={styles.senderName}>{msg?.sender?.name}</div>
+              <div className={styles.messageText}>
                 {msg.message}
-                {msg.edited && <span className="text-warning ms-2">(redaktə edilib)</span>}
+                {msg.edited && <span className={styles.editedLabel}>(redaktə edilib)</span>}
               </div>
-              <div className="d-flex justify-content-between">
-                <small className="text-muted ms-1 mt-1">{formatTime(msg.createdAt)}</small>
+              <div className={styles.bottomBar}>
+                <span className={styles.time}>{formatTime(msg.createdAt)}</span>
                 {isMine && (
-                  <div className="d-flex gap-1 justify-content-end">
-                    <button className="btn btn-sm btn-light" onClick={() => {
-                      setEditId(msg._id);
-                      setNewMessage(msg.message.replace(" (redaktə edilib)", ""));
-                    }}>✏</button>
-                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(msg._id)}>🗑</button>
-                  </div>
+                  <span className={styles.actions}>
+                    <FaEdit
+                      className={styles.iconBtn}
+                      onClick={() => {
+                        setEditId(msg._id);
+                        setNewMessage(msg.message.replace(" (redaktə edilib)", ""));
+                      }}
+                    />
+                    <FaTrash
+                      className={styles.iconBtn}
+                      onClick={() => handleDelete(msg._id)}
+                    />
+                  </span>
                 )}
               </div>
             </div>
@@ -136,17 +154,18 @@ const MergedChat = ({ subject, className, currentUser }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      <InputGroup>
-        <Form.Control
+      <div className={styles.inputBox}>
+        <input
+          type="text"
           placeholder="Mesajınızı yazın..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
-        <Button variant="primary" onClick={handleSend}>
+        <button onClick={handleSend}>
           {editId ? "Yenilə" : "Göndər"}
-        </Button>
-      </InputGroup>
+        </button>
+      </div>
     </div>
   );
 };

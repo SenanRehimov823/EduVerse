@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import styles from "./GradeHomeworkForm.module.css";
+import { FaCheckCircle } from "react-icons/fa";
 
 const GradeHomeworkForm = ({ journal }) => {
   const [grades, setGrades] = useState({});
@@ -16,11 +18,15 @@ const GradeHomeworkForm = ({ journal }) => {
     }
 
     try {
-   await axios.post("http://localhost:5000/api/journal/homework/grade", {
-  journalId: journal._id,
-  studentId,
-  grade: parseInt(grade)
-}, { withCredentials: true });
+      await axios.post(
+        "http://localhost:5000/api/journal/homework/grade",
+        {
+          journalId: journal._id,
+          studentId,
+          grade: parseInt(grade),
+        },
+        { withCredentials: true }
+      );
 
       alert("Qiymət uğurla verildi");
     } catch (err) {
@@ -29,21 +35,23 @@ const GradeHomeworkForm = ({ journal }) => {
   };
 
   return (
-    <div>
-      <h4>Tapşırıqlara Qiymət Ver</h4>
+    <div className={styles.gradeBox}>
+      <h4 className={styles.sectionTitle}>
+        <FaCheckCircle /> Tapşırıqlara Qiymət Ver
+      </h4>
       {journal.records.map((r, idx) => (
-        <div key={idx} style={{ marginBottom: "10px" }}>
-          <span>{r.student?.name}</span> - 
+        <div className={styles.gradeRow} key={idx}>
+          <span className={styles.studentName}>{r.student?.name}</span>
           <input
             type="number"
             placeholder="Qiymət"
             value={grades[r.student._id] || ""}
             onChange={(e) => handleGradeChange(r.student._id, e.target.value)}
-            style={{ width: "60px", marginLeft: "10px" }}
+            className={styles.input}
           />
           <button
+            className={styles.button}
             onClick={() => handleSubmit(r.student._id)}
-            style={{ marginLeft: "10px" }}
           >
             Təsdiqlə
           </button>

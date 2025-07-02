@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import styles from "./MarkBSQForm.module.css";
 
 const MarkBSQForm = ({ journalId, students }) => {
   const [selectedStudent, setSelectedStudent] = useState("");
@@ -26,7 +27,6 @@ const MarkBSQForm = ({ journalId, students }) => {
         { withCredentials: true }
       );
 
-      
       await axios.post(
         "http://localhost:5000/api/journal/final-calculate",
         { journalId },
@@ -42,10 +42,11 @@ const MarkBSQForm = ({ journalId, students }) => {
   };
 
   return (
-    <div style={{ marginTop: "20px", border: "1px solid #ccc", padding: "15px", borderRadius: "8px" }}>
-      <h4 style={{ marginBottom: "10px" }}>📘 BŞQ Qiyməti Əlavə Et</h4>
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+    <div className={styles.container}>
+      <h4 className={styles.title}>📘 BŞQ Qiyməti Əlavə Et</h4>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <select
+          className={styles.select}
           value={selectedStudent}
           onChange={(e) => setSelectedStudent(e.target.value)}
         >
@@ -58,6 +59,7 @@ const MarkBSQForm = ({ journalId, students }) => {
         </select>
 
         <input
+          className={styles.input}
           type="number"
           placeholder="Qiymət (0-100)"
           value={score}
@@ -66,15 +68,19 @@ const MarkBSQForm = ({ journalId, students }) => {
           max="100"
         />
 
-        <select value={term} onChange={(e) => setTerm(e.target.value)}>
+        <select
+          className={styles.select}
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+        >
           <option value="term1">I Yarıil</option>
           <option value="term2">II Yarıil</option>
         </select>
 
-        <button type="submit">Əlavə et</button>
+        <button type="submit" className={styles.button}>Əlavə et</button>
       </form>
 
-      {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };
