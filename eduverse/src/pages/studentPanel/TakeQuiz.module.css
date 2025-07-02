@@ -1,0 +1,70 @@
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 16px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.deadline {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.timer {
+  font-size: 16px;
+  font-weight: 600;
+  color: crimson;
+  margin-bottom: 20px;
+}
+
+.questionCard {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+}
+
+.questionText {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.option input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+.submitButton {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.submitButton:hover {
+  background-color: #1e40af;
+}

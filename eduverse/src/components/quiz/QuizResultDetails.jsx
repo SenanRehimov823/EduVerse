@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router"; // düzəliş
 import axios from "axios";
-import QuizStats from "./QuizStats"; // ⬅️ Statistik komponenti daxil etdik
+import QuizStats from "./QuizStats";
+import styles from "./QuizResultDetails.module.css";
+import { FaCheck, FaTimes } from "react-icons/fa"; // Iconlar əlavə olundu
 
 const QuizResultDetails = () => {
   const { quizId } = useParams();
@@ -26,50 +28,50 @@ const QuizResultDetails = () => {
   if (!quizData) return <p>Yüklənir...</p>;
 
   return (
-    <div className="container mt-4">
-      <h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>
         {quizData.quizTitle} — {quizData.class.grade}{quizData.class.section}
       </h2>
-      <QuizStats quizId={quizId} /> {/* ✅ Statistik komponenti burada çağırılır */}
+
+      <QuizStats quizId={quizId} />
+
       <hr />
+
       {quizData.results.map((result, index) => (
-        <div
-          key={index}
-          style={{ marginBottom: "20px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}
-        >
-          <h5>
+        <div key={index} className={styles.studentCard}>
+          <h5 className={styles.studentName}>
             {index + 1}. {result.studentName} — {result.status}
           </h5>
-          <p>
+          <p className={styles.score}>
             <strong>Ball:</strong> {result.score !== null ? result.score : "—"}
           </p>
+
           {result.answers.length > 0 && (
-            <ol>
+            <ol className={styles.questionList}>
               {result.answers.map((answer, idx) => {
                 const q = quizData.questions[answer.questionIndex];
                 return (
                   <li key={idx}>
-                    <p>
-                      <strong>{q.question}</strong>
-                    </p>
+                    <p className={styles.questionText}>{q.question}</p>
                     <ul>
                       {q.options.map((opt, i) => {
                         const isSelected = answer.selectedOptions.includes(i.toString());
                         const isCorrect = q.correctAnswers.includes(i.toString());
+
                         return (
                           <li
                             key={i}
-                            style={{
-                              color: isCorrect
-                                ? "green"
+                            className={`${styles.option} ${
+                              isCorrect
+                                ? styles.correct
                                 : isSelected
-                                ? "red"
-                                : "black",
-                            }}
+                                ? styles.incorrect
+                                : styles.neutral
+                            }`}
                           >
                             {opt}
-                            {isCorrect && " ✔️"}
-                            {isSelected && !isCorrect && " ❌"}
+                            {isCorrect && <FaCheck />}
+                            {isSelected && !isCorrect && <FaTimes />}
                           </li>
                         );
                       })}

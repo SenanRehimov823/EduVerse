@@ -1,0 +1,158 @@
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 16px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.title {
+  font-size: 30px;
+  color: #2563eb;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.alert {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 14px 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cardTitle {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 14px;
+}
+
+.info {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #374151;
+}
+
+.timer {
+  color: crimson;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* === DETAILS (summary) & QUESTIONS === */
+.details {
+  margin-top: 12px;
+  font-size: 16px;
+  background-color: #f9fafb;
+  padding: 14px;
+  border-radius: 8px;
+}
+
+.details summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
+  padding: 10px 14px;
+  border: 1.5px solid #111;
+  border-radius: 6px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.details summary:hover {
+  background-color: #f3f4f6;
+}
+
+.details[open] summary {
+  background-color: #f9fafb;
+}
+
+.details ol {
+  margin-top: 12px;
+  padding-left: 20px;
+  font-size: 16px;
+}
+
+.details ul {
+  padding-left: 22px;
+  margin-top: 6px;
+  font-size: 15.5px;
+}
+
+.details li {
+  margin-bottom: 4px;
+}
+
+/* === CORRECT ANSWER MARK === */
+.correct {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 15.5px;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* === BUTTONS === */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn {
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.btnResults {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btnResults:hover {
+  background-color: #1d4ed8;
+}
+
+.btnDelete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btnDelete:hover {
+  background-color: #dc2626;
+}

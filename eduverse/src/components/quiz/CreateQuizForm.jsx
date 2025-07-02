@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./CreateQuizForm.module.css";
+import { FaPlusCircle, FaCheckCircle } from "react-icons/fa";
 
 const CreateQuizForm = () => {
   const [lessons, setLessons] = useState([]);
@@ -34,22 +36,17 @@ const CreateQuizForm = () => {
 
   const handleOptionChange = (qIndex, oIndex, value) => {
     const updated = [...form.questions];
+    const oldValue = updated[qIndex].options[oIndex];
     updated[qIndex].options[oIndex] = value;
-
-    // Eyni zamanda correctAnswers-i də yenilə
-    const currentCorrects = updated[qIndex].correctAnswers;
-    const oldValue = form.questions[qIndex].options[oIndex];
-
-    updated[qIndex].correctAnswers = currentCorrects.map((ans) =>
+    updated[qIndex].correctAnswers = updated[qIndex].correctAnswers.map((ans) =>
       ans === oldValue ? value : ans
     );
-
     setForm({ ...form, questions: updated });
   };
 
   const toggleCorrectAnswer = (qIndex, oIndex) => {
     const updated = [...form.questions];
-    const optionValue = updated[qIndex].options[oIndex]; // ✅ real dəyəri götür
+    const optionValue = updated[qIndex].options[oIndex];
     const current = updated[qIndex].correctAnswers;
 
     if (current.includes(optionValue)) {
@@ -75,7 +72,6 @@ const CreateQuizForm = () => {
         withCredentials: true,
       });
       alert("Quiz yaradıldı");
-      // Reset
       setForm({
         title: "",
         subject: "",
@@ -89,9 +85,8 @@ const CreateQuizForm = () => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <h2>Quiz Yarat</h2>
-
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -99,6 +94,7 @@ const CreateQuizForm = () => {
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
+          className={styles["form-input"]}
         />
 
         <select
@@ -108,6 +104,7 @@ const CreateQuizForm = () => {
             setForm({ ...form, subject, className });
           }}
           required
+          className={styles["form-select"]}
         >
           <option value="">Dərs və sinif seç</option>
           {lessons.map((l, i) => (
@@ -122,11 +119,12 @@ const CreateQuizForm = () => {
           value={form.deadline}
           onChange={(e) => setForm({ ...form, deadline: e.target.value })}
           required
+          className={styles["form-datetime"]}
         />
 
         <h4>Sual siyahısı:</h4>
         {form.questions.map((q, qIndex) => (
-          <div key={qIndex} style={{ border: "1px solid gray", margin: "10px 0", padding: "10px" }}>
+          <div key={qIndex} className={styles["question-card"]}>
             <input
               type="text"
               placeholder={`Sual ${qIndex + 1}`}
@@ -136,7 +134,7 @@ const CreateQuizForm = () => {
             />
 
             {q.options.map((opt, oIndex) => (
-              <div key={oIndex}>
+              <div key={oIndex} className={styles["option-row"]}>
                 <input
                   type="text"
                   placeholder={`Variant ${oIndex + 1}`}
@@ -144,7 +142,7 @@ const CreateQuizForm = () => {
                   onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
                   required
                 />
-                <label>
+                <label className={styles["checkbox-label"]}>
                   <input
                     type="checkbox"
                     checked={q.correctAnswers.includes(opt)}
@@ -157,12 +155,12 @@ const CreateQuizForm = () => {
           </div>
         ))}
 
-        <button type="button" onClick={addQuestion}>
-          ➕ Sual əlavə et
+        <button type="button" onClick={addQuestion} className={`${styles.btn} ${styles["btn-add"]}`}>
+          <FaPlusCircle style={{ marginRight: "6px" }} /> Sual əlavə et
         </button>
 
-        <button type="submit" style={{ marginTop: "15px" }}>
-          ✅ Quiz yarat
+        <button type="submit" className={`${styles.btn} ${styles["btn-submit"]}`}>
+          <FaCheckCircle style={{ marginRight: "6px" }} /> Quiz yarat
         </button>
       </form>
     </div>

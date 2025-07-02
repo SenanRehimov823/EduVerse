@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router";
+import styles from "./TakeQuiz.module.css";
 
 const TakeQuiz = () => {
   const { quizId } = useParams();
@@ -36,7 +37,7 @@ const TakeQuiz = () => {
 
       if (diff <= 0) {
         clearInterval(interval);
-        handleSubmit(true); // auto-submit və nəticəyə get
+        handleSubmit(true); // auto-submit
       } else {
         const minutes = Math.floor(diff / 60000);
         const seconds = Math.floor((diff % 60000) / 1000);
@@ -94,34 +95,34 @@ const TakeQuiz = () => {
   if (!quiz) return <p>Quiz tapılmadı</p>;
 
   return (
-    <div className="container mt-5">
-      <h3>{quiz.title}</h3>
-      <p>Vaxt limiti: {new Date(quiz.deadline).toLocaleString()}</p>
-      {timeLeft && <p className="text-danger">⏳ Qalan vaxt: {timeLeft}</p>}
+    <div className={styles.container}>
+      <h3 className={styles.title}>{quiz.title}</h3>
+      <p className={styles.deadline}>Vaxt limiti: {new Date(quiz.deadline).toLocaleString()}</p>
+      {timeLeft && <p className={styles.timer}>⏳ Qalan vaxt: {timeLeft}</p>}
 
       {quiz.questions.map((q, qIndex) => (
-        <div key={qIndex} className="card mb-3 p-3">
-          <h6>Sual {qIndex + 1}: {q.question}</h6>
+        <div key={qIndex} className={styles.questionCard}>
+          <h6 className={styles.questionText}>
+            Sual {qIndex + 1}: {q.question}
+          </h6>
           {q.options.map((opt, idx) => {
             const isSelected = answers.find((a) => a.questionIndex === qIndex)?.selectedOptions.includes(opt);
             return (
-              <div key={idx}>
+              <div key={idx} className={styles.option}>
                 <input
                   type="checkbox"
                   checked={isSelected || false}
                   onChange={() => handleOptionChange(qIndex, opt)}
                   id={`q${qIndex}-opt${idx}`}
                 />
-                <label htmlFor={`q${qIndex}-opt${idx}`} className="ms-2">
-                  {opt}
-                </label>
+                <label htmlFor={`q${qIndex}-opt${idx}`}>{opt}</label>
               </div>
             );
           })}
         </div>
       ))}
 
-      <button className="btn btn-primary" onClick={() => handleSubmit(false)}>
+      <button className={styles.submitButton} onClick={() => handleSubmit(false)}>
         ✅ Təqdim et
       </button>
     </div>

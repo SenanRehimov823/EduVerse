@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import styles from "./StudentActiveQuizzes.module.css";
 
 const StudentActiveQuizzes = () => {
   const [quizzes, setQuizzes] = useState([]);
@@ -26,17 +27,19 @@ const StudentActiveQuizzes = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h3>📝 Aktiv Quizlər</h3>
+    <div className={styles.container}>
+      <h3 className={styles.title}>📝 Aktiv Quizlər</h3>
       {quizzes.length === 0 ? (
-        <p>Hal-hazırda aktiv quiz yoxdur.</p>
+        <p className={styles.empty}>Hal-hazırda aktiv quiz yoxdur.</p>
       ) : (
         quizzes.map((quiz) => (
-          <div key={quiz._id} className="card mb-3 p-3">
-            <h5>{quiz.title}</h5>
-            <p>Bitmə vaxtı: {new Date(quiz.deadline).toLocaleString()}</p>
+          <div key={quiz._id} className={styles.quizCard}>
+            <h5 className={styles.quizTitle}>{quiz.title}</h5>
+            <p className={styles.deadline}>
+              Bitmə vaxtı: {new Date(quiz.deadline).toLocaleString()}
+            </p>
             <button
-              className="btn btn-primary"
+              className={styles.startButton}
               onClick={() => startQuiz(quiz._id)}
             >
               Başla

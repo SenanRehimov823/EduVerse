@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./QuizStats.module.css";
 
 const QuizStats = ({ quizId }) => {
   const [stats, setStats] = useState(null);
@@ -26,14 +27,16 @@ const QuizStats = ({ quizId }) => {
   if (!stats) return <p>Yüklənir...</p>;
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: "10px", marginTop: "15px" }}>
-      <h3>Quiz Statistikası</h3>
-      <p>İştirakçı sayı: {stats.participants}</p>
-      <p>Orta bal: {stats.averageScore}</p>
+    <div className={styles.statsContainer}>
+      <h3 className={styles.title}>Quiz Statistikası</h3>
+      <p className={styles.statItem}>İştirakçı sayı: {stats.participants}</p>
+      <p className={styles.statItem}>Orta bal: {stats.averageScore}</p>
       {stats.topStudent ? (
-        <p>Ən yüksək nəticə: {stats.topStudent.name} ({stats.topStudent.score} bal)</p>
+        <p className={`${styles.statItem} ${styles.highlight}`}>
+          Ən yüksək nəticə: {stats.topStudent.name} ({stats.topStudent.score} bal)
+        </p>
       ) : (
-        <p>Ən yüksək nəticə hələ yoxdur</p>
+        <p className={styles.statItem}>Ən yüksək nəticə hələ yoxdur</p>
       )}
     </div>
   );
