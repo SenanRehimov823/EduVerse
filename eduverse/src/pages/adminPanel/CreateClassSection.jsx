@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./CreateClassSection.module.css"; // ✅ CSS modul faylı əlavə olundu
 
 const CreateClassSection = ({ fetchClasses }) => {
   const [className, setClassName] = useState("");
@@ -62,7 +63,6 @@ const CreateClassSection = ({ fetchClasses }) => {
       setSelectedTeacher("");
       setSelectedStudents([]);
 
-      // Yeni sinif əlavə olunduqdan sonra siyahını yenilə
       if (typeof fetchClasses === "function") fetchClasses();
       if (grade) fetchStudents();
     } catch (err) {
@@ -77,52 +77,57 @@ const CreateClassSection = ({ fetchClasses }) => {
   };
 
   return (
-    <div>
-      <h3>Yeni Sinif Yarat</h3>
+    <div className={styles.container}>
+      <h3>🏫 Yeni Sinif Yarat</h3>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Sinif adı (məs. 3A)"
           value={className}
           onChange={(e) => setClassName(e.target.value)}
+          required
         />
         <input
           type="number"
           placeholder="Sinifin sinfi (məs. 3)"
           value={grade}
           onChange={(e) => setGrade(e.target.value)}
+          required
         />
 
         <select
           value={selectedTeacher}
           onChange={(e) => setSelectedTeacher(e.target.value)}
+          required
         >
           <option value="">Rəhbər müəllimi seçin</option>
-          {Array.isArray(teachers) &&
-            teachers.map((t) => (
-              <option key={t._id} value={t.name}>
-                {t.name} ({t.subjectName || "Fənn yoxdur"})
-              </option>
-            ))}
+          {teachers.map((t) => (
+            <option key={t._id} value={t.name}>
+              {t.name} ({t.subjectName || "Fənn yoxdur"})
+            </option>
+          ))}
         </select>
 
         <div>
-          <h4>Şagirdləri seçin</h4>
-          {availableStudents.map((student) => (
-            <label key={student.name} style={{ marginRight: 10 }}>
-              <input
-                type="checkbox"
-                checked={selectedStudents.includes(student.name)}
-                onChange={() => toggleStudent(student.name)}
-              />
-              {student.name}
-            </label>
-          ))}
+          <h4>👧👦 Şagirdləri Seçin</h4>
+          <div className={styles.checkboxGroup}>
+            {availableStudents.map((student) => (
+              <label key={student.name}>
+                <input
+                  type="checkbox"
+                  checked={selectedStudents.includes(student.name)}
+                  onChange={() => toggleStudent(student.name)}
+                />
+                {student.name}
+              </label>
+            ))}
+          </div>
         </div>
 
-        <button type="submit">Sinif Yarat</button>
+        <button type="submit">✅ Sinif Yarat</button>
       </form>
-      {message && <p style={{ marginTop: 10 }}>{message}</p>}
+
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };

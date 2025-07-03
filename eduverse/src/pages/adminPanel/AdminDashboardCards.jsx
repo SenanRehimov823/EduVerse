@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./AdminDashboardCards.module.css"; 
 
 const AdminDashboardCards = ({ fetchTrigger }) => {
   const [stats, setStats] = useState({
@@ -9,7 +10,6 @@ const AdminDashboardCards = ({ fetchTrigger }) => {
     totalUsers: 0,
   });
 
-  // Stats-ı yenidən fetch etmək üçün əlavə olaraq fetchTrigger dependency-si əlavə olundu.
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -36,14 +36,14 @@ const AdminDashboardCards = ({ fetchTrigger }) => {
     };
 
     fetchStats();
-  }, [fetchTrigger]); 
+  }, [fetchTrigger]);
 
   return (
-    <div className="dashboard-cards" style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-      <div className="card">🔢 Ümumi istifadəçi sayı: <strong>{stats.totalUsers}</strong></div>
-      <div className="card">🎓 Şagird sayı: <strong>{stats.totalStudents}</strong></div>
-      <div className="card">👨‍🏫 Müəllim sayı: <strong>{stats.totalTeachers}</strong></div>
-      <div className="card">🏫 Sinif sayı: <strong>{stats.totalClasses}</strong></div>
+    <div className={styles.dashboardCards}>
+      <div className={styles.card}>🔢 Ümumi istifadəçi sayı: <strong>{stats.totalUsers}</strong></div>
+      <div className={styles.card}>🎓 Şagird sayı: <strong>{stats.totalStudents}</strong></div>
+      <div className={styles.card}>👨‍🏫 Müəllim sayı: <strong>{stats.totalTeachers}</strong></div>
+      <div className={styles.card}>🏫 Sinif sayı: <strong>{stats.totalClasses}</strong></div>
     </div>
   );
 };

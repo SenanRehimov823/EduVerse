@@ -1,0 +1,230 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(to right, white 0%, rgba(255, 255, 255, 0.8) 30%, rgba(255, 255, 255, 0) 60%),
+    url("../assets/hero.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 2rem 2rem;
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.6), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.textContent {
+  color: white;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: black;
+  background-clip: text;
+}
+
+.heroDescription {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  color: black;
+  max-width: 500px;
+}
+
+.heroButtons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.primaryBtn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.playIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* Optional: If you re-enable planets section */
+.visualContent {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+}
+
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.planetMain {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 0 50px rgba(102, 126, 234, 0.6),
+    inset -20px -20px 40px rgba(0, 0, 0, 0.3);
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.planetSmall1 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  box-shadow: 0 0 30px rgba(240, 147, 251, 0.5),
+    inset -10px -10px 20px rgba(0, 0, 0, 0.3);
+  left: 100px;
+  top: 20%;
+  animation-delay: -2s;
+}
+
+.planetSmall2 {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  box-shadow: 0 0 40px rgba(79, 172, 254, 0.5),
+    inset -15px -15px 30px rgba(0, 0, 0, 0.3);
+  left: 50px;
+  bottom: 15%;
+  animation-delay: -4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(180deg);
+  }
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .heroContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .visualContent {
+    height: 400px;
+  }
+
+  .planetMain {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 5rem 1rem 2rem;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroDescription {
+    font-size: 1.1rem;
+  }
+
+  .heroButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

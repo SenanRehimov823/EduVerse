@@ -1,0 +1,55 @@
+.container {
+  background: #fff;
+  padding: 25px;
+  max-width: 500px;
+  margin: 40px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2d3436;
+  font-size: 20px;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #0984e3;
+}
+
+.button {
+  width: 100%;
+  background-color: #00b894;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button:hover {
+  background-color: #019170;
+}
+
+.message {
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 500;
+  color: #6c5ce7;
+}

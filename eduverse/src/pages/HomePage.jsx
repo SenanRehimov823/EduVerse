@@ -4,6 +4,8 @@ import CourseCard from "./CourseCard";
 import EduVerseFeatures from "./EduVerseFeatures";
 import FuturePlanets from "./FuturePlanets";
 import styles from "./HomePage.module.css"; // yeni css faylı
+import HeroSection from "./HeroSection";
+
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
@@ -23,17 +25,11 @@ const HomePage = () => {
 
   return (
     <div>
+      <HeroSection/>
       <EduVerseFeatures />
       <FuturePlanets />
 
       <div className={styles.wrapper}>
-        <h1 className={styles.heading}>EduVerse-ə xoş gəlmisiniz</h1>
-        <div className={styles.links}>
-          <Link to="/register-student">Şagird Qeydiyyatı</Link> |{" "}
-          <Link to="/register-teacher">Müəllim Qeydiyyatı</Link> |{" "}
-          <Link to="/login">Giriş</Link>
-        </div>
-
         <h2 className={styles.subheading}>🎓 Kurslar</h2>
         <div className={styles.courseGrid}>
           {courses.map((course) => (
@@ -41,6 +37,7 @@ const HomePage = () => {
           ))}
         </div>
       </div>
+      
     </div>
   );
 };

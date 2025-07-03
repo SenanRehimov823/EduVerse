@@ -1,6 +1,6 @@
-// /pages/AdminPanel/PendingUsersSection.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./PendingUsersSection.module.css";
 
 const PendingUsersSection = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -48,37 +48,52 @@ const PendingUsersSection = () => {
   );
 
   return (
-    <div>
-      <h3>🕒 Gözləyən istifadəçilər ({filterRole === "student" ? "Şagirdlər" : "Müəllimlər"})</h3>
+    <div className={styles.container}>
+      <h3 className={styles.title}>🕒 Gözləyən istifadəçilər ({filterRole === "student" ? "Şagirdlər" : "Müəllimlər"})</h3>
 
-      <div>
-        <label>
-          <input type="radio" value="student" checked={filterRole === "student"} onChange={() => setFilterRole("student")} />
+      <div className={styles.radioGroup}>
+        <label className={styles.radioLabel}>
+          <input
+            type="radio"
+            value="student"
+            checked={filterRole === "student"}
+            onChange={() => setFilterRole("student")}
+          />
           Şagird
         </label>
-        <label style={{ marginLeft: "20px" }}>
-          <input type="radio" value="teacher" checked={filterRole === "teacher"} onChange={() => setFilterRole("teacher")} />
+        <label className={styles.radioLabel}>
+          <input
+            type="radio"
+            value="teacher"
+            checked={filterRole === "teacher"}
+            onChange={() => setFilterRole("teacher")}
+          />
           Müəllim
         </label>
       </div>
 
-      <ul>
+      <ul className={styles.userList}>
         {filteredUsers.map((user) => (
           <li key={user._id}>
-            <label>
+            <label className={styles.checkboxLabel}>
               <input
                 type="checkbox"
                 checked={selectedUsers.includes(user._id)}
                 onChange={() => handleSelect(user._id)}
               />
-              {user.name} {filterRole === "teacher" && user.subject?.name && `(Fənn: ${user.subject.name})`}
+              {user.name}{" "}
+              {filterRole === "teacher" && user.subject?.name && `(Fənn: ${user.subject.name})`}
               {filterRole === "student" && user.class?.name && ` – ${user.class.name}`}
             </label>
           </li>
         ))}
       </ul>
 
-      <button onClick={handleRoleAssign} disabled={selectedUsers.length === 0}>
+      <button
+        className={styles.button}
+        onClick={handleRoleAssign}
+        disabled={selectedUsers.length === 0}
+      >
         ✅ Seçilənlərə "{filterRole}" rolu təyin et
       </button>
     </div>

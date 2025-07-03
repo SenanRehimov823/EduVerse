@@ -1,41 +1,93 @@
-
 import React from "react";
+import {
+  FaTachometerAlt,
+  FaUsers,
+  FaBookOpen,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router";
+import { useAuth } from "../../context/AuthContext";
+import "./AdminPanel.css";
 import AdminDashboardCards from "./AdminDashboardCards";
 import CreateClassSection from "./CreateClassSection";
 import BulkRoleAssignSection from "./BulkRoleAssignSection";
 import DeleteClassSection from "./DeleteClassSection";
-// import PendingUsersSection from "./PendingUsersSection";
 import ClassCards from "./ClassCards";
 import ManageSubjectsSection from "./ManageSubjectsSection";
-import { Link } from "react-router";
-
 
 const AdminPanel = () => {
-  return (
-    
-    <div style={{ padding: "30px" }}>
-      <h1>🎓 Admin Paneli</h1>
-      <AdminDashboardCards />
-      <hr />
-      <CreateClassSection />
-      <hr />
-      <BulkRoleAssignSection />
-      <hr />
-      {/* <PendingUsersSection /> */}
-      <hr />
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-   <ClassCards/>
-      <hr />
-  <ManageSubjectsSection/>
-      <hr />
-      <DeleteClassSection />
-       <Link to="/admin/courses" className="btn btn-outline-primary mt-3">
-  📚 Kursları İdarə Et
-</Link>
+  const isDashboard = location.pathname === "/admin";
+
+  return (
+    <div className="panelContainer">
+      {/* Sol menyu */}
+      <nav className="sidebar">
+        <div className="profileBox">
+          <FaUsers className="profileIcon" />
+          <span className="profileName">
+            {loading
+              ? "Yüklənir..."
+              : user
+              ? `${user.name} `
+              : "İstifadəçi yoxdur"}
+          </span>
+        </div>
+
+        {/* Dashboard linki */}
+        <NavLink
+          to="/admin"
+          end
+          className={({ isActive }) => `menuItem ${isActive ? "active" : ""}`}
+        >
+          <FaTachometerAlt /> Dashboard
+        </NavLink>
+
+        {/* Kurslar */}
+        <NavLink
+          to="/admin/courses"
+          className={({ isActive }) => `menuItem ${isActive ? "active" : ""}`}
+        >
+          <FaBookOpen /> Kurslar
+        </NavLink>
+
+        {/* Müəllim Dərsləri */}
+        <NavLink
+          to="/admin/teacher-page"
+          className={({ isActive }) => `menuItem ${isActive ? "active" : ""}`}
+        >
+          <FaBookOpen /> Müəllim Dərsləri
+        </NavLink>
+
+        {/* Çıxış */}
+        <button onClick={() => navigate("/")} className="exitBtn">
+          <FaSignOutAlt /> Çıxış
+        </button>
+      </nav>
+
+      {/* Sağ content sahəsi */}
+      <main className="content">
+        <h1>Admin Paneli</h1>
+
+        {isDashboard ? (
+          <>
+            <AdminDashboardCards />
+            <CreateClassSection />
+            <BulkRoleAssignSection />
+            <DeleteClassSection />
+            <ClassCards />
+            <ManageSubjectsSection />
+            
+          </>
+        ) : (
+          <Outlet />
+        )}
+      </main>
     </div>
-    
   );
- 
 };
 
 export default AdminPanel;

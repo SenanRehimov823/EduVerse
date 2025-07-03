@@ -8,7 +8,10 @@ const StudentProfile = () => {
   const [error, setError] = useState("");
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
-  const [passwordData, setPasswordData] = useState({ currentPassword: "", newPassword: "" });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+  });
   const [passwordStatus, setPasswordStatus] = useState("");
   const [deleteStatus, setDeleteStatus] = useState("");
 
@@ -87,37 +90,66 @@ const StudentProfile = () => {
 
   return (
     <div className={styles.container}>
-      <h2>👤 Şagird Profilim</h2>
+      <h2>👤 {profile.role === "teacher" ? "Müəllim Profilim" : "Şagird Profilim"}</h2>
       <div className={styles.card}>
         <div className={styles.row}>
-          <img
-            src={`http://localhost:5000${profile.image}`}
-            alt="Profil şəkli"
-            className={styles.imgFluid}
-          />
+          {profile.image ? (
+            <img
+              src={`http://localhost:5000${profile.image}`}
+              alt="Profil şəkli"
+              className={styles.imgFluid}
+            />
+          ) : (
+            <div className={styles.initialAvatar}>
+              {profile.name?.charAt(0).toUpperCase()}
+            </div>
+          )}
+
           <form onSubmit={handleImageUpload}>
-            <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} className="form-control mb-2" />
-            <button type="submit" className="btn btn-primary btn-sm">📤 Şəkli Yenilə</button>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="form-control mb-2"
+            />
+            <button type="submit" className="btn btn-primary btn-sm">
+              📤 Şəkli Yenilə
+            </button>
             {uploadStatus && <p className={styles.mt2}>{uploadStatus}</p>}
           </form>
         </div>
 
         <hr />
         <p><strong>Ad:</strong> {profile.name}</p>
-        <p><strong>Soyad:</strong> {profile.surname}</p>
+       
         <p><strong>Email:</strong> {profile.email}</p>
-        <p><strong>Sinif:</strong> {profile.className}</p>
+        <p>
+          <strong>{profile.role === "teacher" ? "Fənn" : "Sinif"}:</strong>{" "}
+          {profile.className}
+        </p>
         <p><strong>Rolu:</strong> {profile.role}</p>
 
         <hr />
         <h5>🔐 Şifrəni Dəyiş</h5>
         <form onSubmit={handleChangePassword}>
-          <input type="password" placeholder="Köhnə şifrə" className="form-control mb-2"
+          <input
+            type="password"
+            placeholder="Köhnə şifrə"
+            className="form-control mb-2"
             value={passwordData.currentPassword}
-            onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} />
-          <input type="password" placeholder="Yeni şifrə" className="form-control mb-2"
+            onChange={(e) =>
+              setPasswordData({ ...passwordData, currentPassword: e.target.value })
+            }
+          />
+          <input
+            type="password"
+            placeholder="Yeni şifrə"
+            className="form-control mb-2"
             value={passwordData.newPassword}
-            onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} />
+            onChange={(e) =>
+              setPasswordData({ ...passwordData, newPassword: e.target.value })
+            }
+          />
           <button type="submit" className={`btn ${styles.updateBtn} ${styles.iconBtn}`}>
             <FiEdit3 /> Dəyiş
           </button>
@@ -125,15 +157,21 @@ const StudentProfile = () => {
         </form>
 
         <hr />
-        <h5> Hesabı Sil</h5>
-        <button onClick={handleDeleteAccount} className={`btn ${styles.deleteBtn} ${styles.iconBtn}`}>
+        <h5>Hesabı Sil</h5>
+        <button
+          onClick={handleDeleteAccount}
+          className={`btn ${styles.deleteBtn} ${styles.iconBtn}`}
+        >
           <FiTrash2 /> Hesabı Sil
         </button>
         {deleteStatus && <p className={styles.mt2}>{deleteStatus}</p>}
 
         <hr />
         <h5> Çıxış Et</h5>
-        <button onClick={handleLogout} className={`btn ${styles.logoutBtn} ${styles.iconBtn}`}>
+        <button
+          onClick={handleLogout}
+          className={`btn ${styles.logoutBtn} ${styles.iconBtn}`}
+        >
           <FiLogOut /> Çıxış
         </button>
       </div>

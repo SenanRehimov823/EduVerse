@@ -1,0 +1,79 @@
+.container {
+  background: #fff;
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2d3436;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.radioGroup {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.radioLabel {
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.userList {
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-left: 0;
+  margin-bottom: 20px;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+}
+
+.userList li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #dfe6e9;
+  font-size: 16px;
+}
+
+.userList li:last-child {
+  border-bottom: none;
+}
+
+.checkboxLabel {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.button {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  background-color: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease-in-out;
+}
+
+.button:disabled {
+  background-color: #b2bec3;
+  cursor: not-allowed;
+}
+
+.button:hover:not(:disabled) {
+  background-color: #0652dd;
+}

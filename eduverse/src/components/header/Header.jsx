@@ -27,7 +27,10 @@ const Header = () => {
     panelLink = "/student/panel";
   } else if (user?.role === "teacher") {
     panelLink = "/teacher/panel";
-  }
+     
+  }else if (user?.role === "admin") {
+  panelLink = "/admin"; 
+}
 
   return (
     <header className={styles.header}>

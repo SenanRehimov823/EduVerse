@@ -22,7 +22,7 @@ const LoginPage = () => {
         { withCredentials: true }
       );
 
-      setUser(res.data.user); // 👈 Context-ə user məlumatı yazılır
+      setUser(res.data.user); 
 
       const role = res.data.user.role;
 
@@ -33,7 +33,7 @@ const LoginPage = () => {
       } else if (role === "teacher") {
         navigate("/");
       } else if (role === "admin") {
-        navigate("/admin");
+        navigate("/");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Xəta baş verdi");

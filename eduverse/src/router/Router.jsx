@@ -29,6 +29,7 @@ import TakeQuiz from "../pages/studentPanel/TakeQuiz";
 import StudentQuizResult from "../pages/studentPanel/StudentQuizResult";
 import Layout from "../components/layout/Layout";
 import StudentPanel from "../pages/studentPanel/StudentPanel";
+import TeacherPanel from "../pages/teacherPanel/TeacherPanel";
 
 
 const Router = () => {
@@ -37,38 +38,44 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-       <Route path='/' element={<Layout/>}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register-student" element={<StudentRegisterForm />} />
-        <Route path="/register-teacher" element={<TeacherRegisterForm />} />
-      <Route path="/admin" element={<AdminPanel />} />
- <Route path="/teacher-page" element={<TeacherPage/>} />
- <Route path="/teacher/journal" element={<JournalPage/>} />
-  <Route path="/teacher/quiz/create" element={<CreateQuizPage />} />
-  <Route path="/teacher/quiz/list" element={<QuizListPage />} />
-   <Route path="/teacher/quiz/:quizId/results" element={<QuizResultDetails />} />
-   <Route path="/student/profile" element={<StudentProfile />} />
-   <Route path="/student/subjects" element={<MySubjects />} />
- 
- <Route path="/merged-chat" element={<MergedChatWrapper />} />
- <Route path="/merged-chat-room" element={<MergedChatRoom/>} />
+        <Route path='/' element={<Layout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register-student" element={<StudentRegisterForm />} />
+          <Route path="/register-teacher" element={<TeacherRegisterForm />} />
+          {/* <Route path="/admin" element={<AdminPanel />} /> */}
+          {/* <Route path="/teacher-page" element={<TeacherPage />} /> */}
+          <Route path="/teacher/journal" element={<JournalPage />} />
+          <Route path="/teacher/quiz/create" element={<CreateQuizPage />} />
+          <Route path="/teacher/quiz/list" element={<QuizListPage />} />
+          <Route path="/teacher/quiz/:quizId/results" element={<QuizResultDetails />} />
+          <Route path="/student/profile" element={<StudentProfile />} />
+          <Route path="/student/subjects" element={<MySubjects />} />
 
- <Route path="/student/my-journals" element={<MyJournal />} />
- 
-<Route path="/student/chat-room" element={<ChatRoomWrapper />} />
-<Route path="/student/dashboard" element={<StudentDashboard />} />
-<Route path="/student/panel" element={<StudentPanel />} />
+          <Route path="/merged-chat" element={<MergedChatWrapper />} />
+          <Route path="/merged-chat-room" element={<MergedChatRoom />} />
 
-  <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
-  <Route path="/teacher/chat" element={<MergedChatPage />} />
-   <Route path="/admin/courses" element={<AdminCoursesPanel />} />
-   <Route path="/payment-success" element={<PaymentSuccess />} />
-<Route path="/payment-cancel" element={<PaymentCancel />} />
-<Route path="/student/quiz-active" element={<StudentActiveQuizzes />} />
-<Route path="/student/quiz/:quizId" element={<TakeQuiz />} />
-<Route path="/student/quiz-result/:quizId" element={<StudentQuizResult/>} />
-</Route>
+          <Route path="/student/my-journals" element={<MyJournal />} />
+
+          <Route path="/student/chat-room" element={<ChatRoomWrapper />} />
+          <Route path="/student/dashboard" element={<StudentDashboard />} />
+          <Route path="/student/panel" element={<StudentPanel />} />
+<Route path="/teacher/panel" element={<TeacherPanel />} />
+          <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
+          <Route path="/teacher/chat" element={<MergedChatPage />} />
+
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<PaymentCancel />} />
+          <Route path="/student/quiz-active" element={<StudentActiveQuizzes />} />
+          <Route path="/student/quiz/:quizId" element={<TakeQuiz />} />
+          <Route path="/student/quiz-result/:quizId" element={<StudentQuizResult />} />
+          <Route path="/admin" element={<AdminPanel />}>
+            <Route index element={<h2>Admin Dashboard</h2>} />
+            <Route path="courses" element={<AdminCoursesPanel />} />
+             <Route path="teacher-page" element={<TeacherPage />} />
+          </Route>
+        </Route>
+
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"

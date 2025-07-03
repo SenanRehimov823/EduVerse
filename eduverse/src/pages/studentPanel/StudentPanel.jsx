@@ -43,7 +43,7 @@ const StudentPanel = () => {
             {loading
               ? "Yüklənir..."
               : user
-              ? `${user.name} ${user.surname}`
+              ? `${user.name}`
               : "İstifadəçi yoxdur"}
           </span>
         </div>

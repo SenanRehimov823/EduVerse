@@ -104,9 +104,28 @@ const ChatRoom = ({ lessonId, currentUser }) => {
 
   return (
     <div className={`${styles.chatWrapper} ${darkMode ? styles.dark : styles.light}`}>
-      <div className={styles.chatHeader}>
+      <div
+        className={styles.chatHeader}
+        style={{
+          backgroundColor: darkMode ? "#1e1e1e" : "#f1f5f9",
+          color: darkMode ? "#fff" : "#222",
+          padding: "10px 20px",
+          fontSize: "20px",
+          fontWeight: "600",
+        }}
+      >
         Sinif Chati
-        <button className={styles.toggleBtn} onClick={() => setDarkMode(!darkMode)}>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{
+            marginLeft: "auto",
+            background: "transparent",
+            border: "none",
+            fontSize: "22px",
+            cursor: "pointer",
+            color: darkMode ? "#fff" : "#000",
+          }}
+        >
           {darkMode ? "☀️" : "🌙"}
         </button>
       </div>
@@ -164,9 +183,23 @@ const ChatRoom = ({ lessonId, currentUser }) => {
             editingMessageId ? setEditedText(e.target.value) : setNewMessage(e.target.value)
           }
           placeholder="Mesajınızı yazın..."
-          onKeyDown={(e) => e.key === "Enter" && (editingMessageId ? handleEdit() : handleSend())}
+          onKeyDown={(e) =>
+            e.key === "Enter" && (editingMessageId ? handleEdit() : handleSend())
+          }
         />
-        <button onClick={editingMessageId ? handleEdit : handleSend}>
+        <button
+          onClick={editingMessageId ? handleEdit : handleSend}
+          style={{
+            backgroundColor: "#2563eb",
+            border: "none",
+            color: "#fff",
+            padding: "10px 14px",
+            borderRadius: "8px",
+            marginLeft: "10px",
+            cursor: "pointer",
+            fontSize: "16px",
+          }}
+        >
           <FaPaperPlane />
         </button>
       </div>

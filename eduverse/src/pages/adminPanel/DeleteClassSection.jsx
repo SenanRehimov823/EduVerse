@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import styles from "./DeleteClassSection.module.css"; // ✅ CSS modul əlavə olundu
 
 const DeleteClassSection = ({ fetchClasses, classes: externalClasses }) => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [message, setMessage] = useState("");
 
-  // Əgər parentdən classes prop-u gəlibsə, onu istinad kimi saxla!
   useEffect(() => {
     if (externalClasses && Array.isArray(externalClasses)) {
       setClasses(externalClasses);
     }
   }, [externalClasses]);
 
-  // Əgər parentdən fetchClasses prop-u gəlməyibsə, local fetch et
   useEffect(() => {
     if (!externalClasses) {
       const fetchOwnClasses = async () => {
@@ -38,10 +37,10 @@ const DeleteClassSection = ({ fetchClasses, classes: externalClasses }) => {
       if (section) url += `/${section}`;
       if (sector) url += `/${sector}`;
       await axios.delete(url, { withCredentials: true });
-      setMessage("Sinif uğurla silindi");
+
+      setMessage("✅ Sinif uğurla silindi");
       setSelectedClass(null);
 
-      // Əgər parentdən fetchClasses gəlibsə, onu çağır, yoxdursa local yenilə
       if (typeof fetchClasses === "function") {
         fetchClasses();
       } else {
@@ -55,12 +54,12 @@ const DeleteClassSection = ({ fetchClasses, classes: externalClasses }) => {
         ));
       }
     } catch (error) {
-      setMessage("Xəta baş verdi: " + (error.response?.data?.message || ""));
+      setMessage("❌ Xəta baş verdi: " + (error.response?.data?.message || ""));
     }
   };
 
   return (
-    <div className="delete-class-section">
+    <div className={styles.wrapper}>
       <h3>❌ Sinifi Sil</h3>
       <select
         value={selectedClass ? JSON.stringify(selectedClass) : ""}
@@ -87,7 +86,7 @@ const DeleteClassSection = ({ fetchClasses, classes: externalClasses }) => {
       <button onClick={handleDelete} disabled={!selectedClass}>
         Sil
       </button>
-      {message && <p style={{ color: "red", marginTop: 10 }}>{message}</p>}
+      {message && <p className={styles.message}>{message}</p>}
     </div>
   );
 };
