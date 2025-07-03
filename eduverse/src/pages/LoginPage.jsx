@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/AuthContext"; // yolu uyğun olaraq düzəlt
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,15 +22,16 @@ const LoginPage = () => {
         { withCredentials: true }
       );
 
+      setUser(res.data.user); // 👈 Context-ə user məlumatı yazılır
+
       const role = res.data.user.role;
 
-      // Pending istifadəçi yalnız ana səhifəyə yönləndirilir
       if (role === "pending") {
         navigate("/");
       } else if (role === "student") {
-        navigate("/student");
+        navigate("/");
       } else if (role === "teacher") {
-        navigate("/teacher");
+        navigate("/");
       } else if (role === "admin") {
         navigate("/admin");
       }
@@ -37,24 +41,61 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
-      <h2>Giriş</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email daxil edin"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+    <div className="login-container">
+      <div className="login-left">
+        <img
+          src="../../public/planets/code.jpg"
+          alt="Login Illustration"
+          className="illustration-img"
         />
-        <input
-          type="password"
-          placeholder="Şifrə daxil edin"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+      </div>
+      <div className="login-right">
+        <img
+          src=""
+          alt="EduVerse Logo"
+          className="logo-img"
         />
-        <button type="submit">Daxil ol</button>
-      </form>
-      {error && <p style={{ color: "red", marginTop: 10 }}>{error}</p>}
+        <h2 className="login-title">Giriş</h2>
+
+        <form onSubmit={handleLogin} className="login-form">
+          <label>Email adresini və ya istifadəçi adını qeyd et</label>
+          <input
+            type="email"
+            placeholder="E-mail və ya istifadəçi adı"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Şifrə</label>
+          <input
+            type="password"
+            placeholder="Şifrə"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <div className="remember-section">
+            <input type="checkbox" id="remember" />
+            <label htmlFor="remember">Xatırla</label>
+          </div>
+
+          <button type="submit" className="login-button">Daxil Ol</button>
+        </form>
+
+        {error && <p className="error-message">{error}</p>}
+
+        <div className="alt-login">
+          <hr />
+          <span>və ya</span>
+          <hr />
+        </div>
+
+        <div className="login-options">
+          {/* Google və Apple login gələcəkdə buraya əlavə oluna bilər */}
+        </div>
+      </div>
     </div>
   );
 };

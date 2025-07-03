@@ -1,0 +1,243 @@
+.header {
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+}
+
+/* Logo */
+.logo {
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2563eb;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLink {
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #2563eb;
+}
+
+/* Auth Buttons */
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loginBtn {
+  background: none;
+  border: none;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.loginBtn:hover {
+  color: #2563eb;
+}
+
+.signupBtn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.signupBtn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Mobile Menu Button */
+.mobileMenuBtn {
+  display: none;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hamburgerLine {
+  width: 24px;
+  height: 2px;
+  background-color: #374151;
+  transition: all 0.2s ease;
+}
+
+.hamburger:hover .hamburgerLine {
+  background-color: #2563eb;
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px 15px;
+  position: absolute;
+  top: 64px;
+  right: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  width: 200px;
+}
+
+.mobileLink {
+  background-color: #2563eb;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.profileWrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profileIcon {
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profileIcon:hover {
+  color: #ccc;
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 120px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dropdownItem {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+
+.mobileLink:hover {
+  background-color: #1e40af;
+}
+.dropdownIcon {
+  margin-right: 6px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.mobileIcon {
+  margin-right: 6px;
+  font-size: 16px;
+  vertical-align: middle;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .mobileMenuBtn {
+    display: block;
+  }
+
+  .authButtons {
+    display: none;
+  }
+
+  .container {
+    padding: 0 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .headerContent {
+    height: 56px;
+  }
+
+  .logoText {
+    font-size: 1.25rem;
+  }
+
+  .container {
+    padding: 0 0.5rem;
+  }
+}

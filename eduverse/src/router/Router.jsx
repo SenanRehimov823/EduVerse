@@ -27,6 +27,8 @@ import StudentDashboard from "../pages/studentPanel/StudentDashboard";
 import StudentActiveQuizzes from "../pages/studentPanel/StudentActiveQuizzes";
 import TakeQuiz from "../pages/studentPanel/TakeQuiz";
 import StudentQuizResult from "../pages/studentPanel/StudentQuizResult";
+import Layout from "../components/layout/Layout";
+import StudentPanel from "../pages/studentPanel/StudentPanel";
 
 
 const Router = () => {
@@ -35,6 +37,7 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+       <Route path='/' element={<Layout/>}>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register-student" element={<StudentRegisterForm />} />
@@ -55,6 +58,7 @@ const Router = () => {
  
 <Route path="/student/chat-room" element={<ChatRoomWrapper />} />
 <Route path="/student/dashboard" element={<StudentDashboard />} />
+<Route path="/student/panel" element={<StudentPanel />} />
 
   <Route path="/teacher-chat" element={<TeacherChatWrapper />} />
   <Route path="/teacher/chat" element={<MergedChatPage />} />
@@ -64,7 +68,7 @@ const Router = () => {
 <Route path="/student/quiz-active" element={<StudentActiveQuizzes />} />
 <Route path="/student/quiz/:quizId" element={<TakeQuiz />} />
 <Route path="/student/quiz-result/:quizId" element={<StudentQuizResult/>} />
-
+</Route>
         {/* Admin route - sadəcə adminlərə */}
         {/* <Route
           path="/admin"
