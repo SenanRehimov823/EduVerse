@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import CourseCard from "./CourseCard";
 import EduVerseFeatures from "./EduVerseFeatures";
 import FuturePlanets from "./FuturePlanets";
-import styles from "./HomePage.module.css"; // yeni css faylı
+import styles from "./HomePage.module.css"; 
 import HeroSection from "./HeroSection";
 
 

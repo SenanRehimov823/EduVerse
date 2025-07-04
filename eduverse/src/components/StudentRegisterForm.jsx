@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import styles from "./StudentRegisterForm.module.css";
 
 const StudentRegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -34,16 +35,56 @@ const StudentRegisterForm = () => {
   };
 
   return (
-    <div className="register-container">
-      <h2>Şagird Qeydiyyatı</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Ad" value={formData.name} onChange={handleChange} required />
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Şifrə" value={formData.password} onChange={handleChange} required />
-        <input type="password" name="confirmPassword" placeholder="Şifrəni təkrar daxil edin" value={formData.confirmPassword} onChange={handleChange} required />
-        <input type="text" name="grade" placeholder="Sinif (məs. 8)" value={formData.grade} onChange={handleChange} required />
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <button type="submit">Qeydiyyat</button>
+    <div className={styles.registerContainer}>
+      <h2 className={styles.registerTitle}>Şagird Qeydiyyatı</h2>
+      <form onSubmit={handleSubmit} className={styles.registerForm}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Ad"
+          value={formData.name}
+          onChange={handleChange}
+          className={styles.inputField}
+          required
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          className={styles.inputField}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Şifrə"
+          value={formData.password}
+          onChange={handleChange}
+          className={styles.inputField}
+          required
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Şifrəni təkrar daxil edin"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          className={styles.inputField}
+          required
+        />
+        <input
+          type="text"
+          name="grade"
+          placeholder="Sinif (məs. 8)"
+          value={formData.grade}
+          onChange={handleChange}
+          className={styles.inputField}
+          required
+        />
+        {error && <p className={styles.errorMessage}>{error}</p>}
+        <button type="submit" className={styles.submitButton}>Qeydiyyat</button>
       </form>
     </div>
   );

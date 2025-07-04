@@ -37,7 +37,7 @@ const TakeQuiz = () => {
 
       if (diff <= 0) {
         clearInterval(interval);
-        handleSubmit(true); // auto-submit
+        handleSubmit(true); 
       } else {
         const minutes = Math.floor(diff / 60000);
         const seconds = Math.floor((diff % 60000) / 1000);

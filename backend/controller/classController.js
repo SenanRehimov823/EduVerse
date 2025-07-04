@@ -245,15 +245,15 @@ export const deleteClass = async (req, res) => {
     const foundClass = await Class.findOne({ grade, section });
     if (!foundClass) return res.status(404).json({ message: "Sinif tapılmadı" });
 
-    // Subject tap və ya yarat
+ 
     let subject = await Subject.findOne({ name: subjectName });
     if (!subject) subject = await Subject.create({ name: subjectName });
 
-    // Teacher tap
+    
     const teacher = await User.findOne({ name: teacherName, role: "teacher" });
     if (!teacher) return res.status(404).json({ message: "Müəllim tapılmadı" });
 
-    // Əvvəldən əlavə olunubsa, təkrar etmə
+   
     const alreadyAdded = foundClass.subjectTeachers.some(
       st => st.subject.toString() === subject._id.toString()
     );

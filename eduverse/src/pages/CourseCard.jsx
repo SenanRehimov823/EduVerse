@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./CourseCard.module.css"; // CSS Module istifadə edilir
+import styles from "./CourseCard.module.css"; 
 
 const CourseCard = ({ course }) => {
   if (!course) return null;

@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 
-/* Sidebar - normal ekranlar */
+
 .sidebar {
   width: 250px;
   background-color: #ffffff;
@@ -85,14 +85,13 @@
   background-color: #dc2626;
 }
 
-/* Main content - full area */
 .content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
 }
 
-/* Responsive for mobile */
+
 @media (max-width: 768px) {
   .panelContainer {
     flex-direction: column;

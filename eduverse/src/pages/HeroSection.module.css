@@ -111,7 +111,7 @@
   fill: currentColor;
 }
 
-/* Optional: If you re-enable planets section */
+
 .visualContent {
   position: relative;
   display: flex;
@@ -178,7 +178,7 @@
   }
 }
 
-/* Responsive */
+
 @media (max-width: 1024px) {
   .heroContent {
     grid-template-columns: 1fr;

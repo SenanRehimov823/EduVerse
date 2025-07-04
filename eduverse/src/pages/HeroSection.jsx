@@ -29,11 +29,7 @@ function HeroSection() {
           </div>
         </div>
 
-        {/* <div className={styles.visualContent}>
-          <div className={`${styles.planet} ${styles.planetMain}`}></div>
-          <div className={`${styles.planet} ${styles.planetSmall1}`}></div>
-          <div className={`${styles.planet} ${styles.planetSmall2}`}></div>
-        </div> */}
+       
       </div>
     </section>
   );

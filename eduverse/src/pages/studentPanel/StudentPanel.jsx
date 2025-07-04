@@ -11,7 +11,7 @@ import StudentProfile from "./StudentProfile";
 import StudentDashboard from "./StudentDashboard";
 import StudentActiveQuizzes from "./StudentActiveQuizzes";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/AuthContext"; // öz yoluna uyğun düzəlt
+import { useAuth } from "../../context/AuthContext"; 
 import styles from "./StudentPanel.module.css";
 
 const StudentPanel = () => {

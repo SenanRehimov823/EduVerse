@@ -17,7 +17,7 @@
   margin-bottom: 40px;
 }
 
-/* Mərkəzləşdirilmiş grid */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -57,7 +57,7 @@
   line-height: 1.5;
 }
 
-/* Responsiv düzülmə */
+
 
 @media (max-width: 992px) {
   .grid {

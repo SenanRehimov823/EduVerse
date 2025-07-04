@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./DeleteClassSection.module.css"; // ✅ CSS modul əlavə olundu
+import styles from "./DeleteClassSection.module.css"; 
 
 const DeleteClassSection = ({ fetchClasses, classes: externalClasses }) => {
   const [classes, setClasses] = useState([]);

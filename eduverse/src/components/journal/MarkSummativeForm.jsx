@@ -30,7 +30,7 @@ const MarkSummativeForm = ({ journal }) => {
         }
       }
     }
-    window.location.reload(); // test məqsədilə
+    window.location.reload(); 
   };
 
   return (

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="87ae506f-f7b9-4a06-9765-3db87c6df7c2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/eduverse/src/components/chat/ChatRoom.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/components/chat/ChatRoom.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/components/chat/ChatRoom.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/components/chat/ChatRoom.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/components/header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/components/header/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/components/header/Header.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/components/header/Header.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/components/layout/Layout.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/components/layout/Layout.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/context/AuthContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/context/AuthContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/HomePage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/HomePage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/LoginPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/LoginPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminCoursesPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminCoursesPanel.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminCoursesPanel.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminCoursesPanel.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminDashboardCards.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminDashboardCards.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AdminPanel.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AssignHeadTeacherSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/AssignHeadTeacherSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/BulkRoleAssignSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/BulkRoleAssignSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/ClassCards.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/ClassCards.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/CreateClassSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/CreateClassSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/DeleteClassSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/DeleteClassSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/ManageSubjectsSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/ManageSubjectsSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/PendingUsersSection.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/adminPanel/PendingUsersSection.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/studentPanel/StudentProfile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/studentPanel/StudentProfile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/studentPanel/StudentProfile.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/studentPanel/StudentProfile.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/pages/teacherPanel/MergedChatPage.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/pages/teacherPanel/MergedChatPage.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eduverse/src/router/Router.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/eduverse/src/router/Router.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "SenanRahimov"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2zNFh6OkEreB6IuFP8EmacxEVB1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="87ae506f-f7b9-4a06-9765-3db87c6df7c2" name="Changes" comment="" />
+      <created>1751563742192</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1751563742192</updated>
+    </task>
+    <servers />
+  </component>
+</project>

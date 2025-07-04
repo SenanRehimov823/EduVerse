@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./CreateClassSection.module.css"; // ✅ CSS modul faylı əlavə olundu
+import styles from "./CreateClassSection.module.css"; 
 
 const CreateClassSection = ({ fetchClasses }) => {
   const [className, setClassName] = useState("");

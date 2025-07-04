@@ -13,7 +13,7 @@ export const createCheckoutSession = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      customer_email: req.user.email, // Stripe checkout formunda göstərmək üçün
+      customer_email: req.user.email, 
 
       line_items: [
         {
@@ -29,8 +29,8 @@ export const createCheckoutSession = async (req, res) => {
       ],
 
       metadata: {
-        courseId: course._id.toString(),  // ✅ string formatda olmalıdır
-        userId: req.user.id.toString(),   // ✅ string formatda olmalıdır
+        courseId: course._id.toString(),  
+        userId: req.user.id.toString(),   
       },
 
      success_url: "http://localhost:5173/payment-success",

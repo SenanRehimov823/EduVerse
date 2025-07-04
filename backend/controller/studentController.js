@@ -9,39 +9,26 @@ import Subject from "../model/subject.js";
 export const getMySubjects = async (req, res) => {
   try {
     const studentId = req.user.id;
-
-    // Şagirdi tapıb sinfini yükləyirik
     const student = await User.findById(studentId).populate("class");
 
-    // O sinfə aid olan dərsləri tapırıq
     const lessons = await Lesson.find({ class: student.class._id }) 
       .populate("teacher", "name")
       .populate("subject", "name")
-      .populate("class", "grade section sector") // ✨ burada lazım olan hissələri yükləyirik
+      .populate("class", "grade section sector")
       .select("subject teacher class");
 
-    // Formatlanmış cavab
     const formattedSubjects = lessons.map(lesson => ({
       _id: lesson._id,
       subject: lesson.subject,
       teacher: lesson.teacher,
-      className: `${lesson.class.grade}${lesson.class.section || ""}${lesson.class.sector || ""}`, // ✨ sinif adı formatı
+      className: `${lesson.class.grade}${lesson.class.section || ""}${lesson.class.sector || ""}`,
     }));
-
-    // Debug üçün log
-    console.log("🎓 Backenddən göndərilən fənlər:", formattedSubjects);
 
     res.status(200).json({ subjects: formattedSubjects });
   } catch (error) {
-    console.error("🚨 getMySubjects xətası:", error);
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json();
   }
 };
-
-
-
-
-
 
 export const getMyJournalBySubject = async (req, res) => {
   try {
@@ -49,23 +36,17 @@ export const getMyJournalBySubject = async (req, res) => {
     const subjectName = req.params.subject;
 
     const student = await User.findById(studentId).populate("class");
-    if (!student || !student.class) {
-      return res.status(404).json({ message: "Şagird və ya sinif tapılmadı" });
-    }
+    if (!student || !student.class) return res.status(404).json();
 
     const subject = await Subject.findOne({ name: new RegExp(`^${subjectName}$`, "i") });
-    if (!subject) {
-      return res.status(404).json({ message: "Fənn tapılmadı" });
-    }
+    if (!subject) return res.status(404).json();
 
     const lesson = await Lesson.findOne({
       class: student.class._id,
       subject: subject._id
     }).populate("subject teacher");
 
-    if (!lesson || !lesson.teacher || !lesson.subject) {
-      return res.status(404).json({ message: "Dərs və ya əlaqəli müəllim/fənn tapılmadı" });
-    }
+    if (!lesson || !lesson.teacher || !lesson.subject) return res.status(404).json();
 
     const journalEntries = await Journal.find({
       classId: student.class._id,
@@ -98,7 +79,7 @@ export const getMyJournalBySubject = async (req, res) => {
       records
     });
   } catch (err) {
-    res.status(500).json({ message: "Server xətası", error: err.message });
+    res.status(500).json();
   }
 };
 
@@ -123,9 +104,10 @@ export const getMyQuizResultsBySubject = async (req, res) => {
 
     res.status(200).json({ subject, results: formatted });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json();
   }
 };
+
 export const getMySubjectAverages = async (req, res) => {
   try {
     const studentId = req.user.id;
@@ -145,7 +127,7 @@ export const getMySubjectAverages = async (req, res) => {
 
     res.status(200).json({ averages });
   } catch (err) {
-    res.status(500).json({ message: "Server xətası", error: err.message });
+    res.status(500).json();
   }
 };
 
@@ -158,12 +140,13 @@ export const getStudentProfile = async (req, res) => {
       email: student.email,
       image: student.image,
       className: student.class ? `${student.class.grade}${student.class.section}` : null,
-       role: student.role
+      role: student.role
     });
   } catch (err) {
-    res.status(500).json({ message: "Xəta baş verdi", error: err.message });
+    res.status(500).json();
   }
 };
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
@@ -172,19 +155,17 @@ const upload = multer({ storage }).single("image");
 
 export const updateProfileImage = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ message: "Şəkil seçilməyib" });
+    if (!req.file) return res.status(400).json();
 
     await User.findByIdAndUpdate(req.user.id, {
       image: `/uploads/${req.file.filename}`,
     });
 
-    res.status(200).json({ message: "Şəkil yeniləndi" });
+    res.status(200).json();
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };
-
-
 
 export const getActiveQuizzes = async (req, res) => {
   try {
@@ -200,7 +181,7 @@ export const getActiveQuizzes = async (req, res) => {
     const active = allQuizzes.filter(q => !takenIds.includes(q._id.toString()));
     res.status(200).json({ active });
   } catch (err) {
-    res.status(500).json({ message: "Xəta baş verdi", error: err.message });
+    res.status(500).json();
   }
 };
 
@@ -211,7 +192,7 @@ export const getQuizDetailsForStudent = async (req, res) => {
 
     const quiz = await Quiz.findById(quizId).populate("teacher", "name");
     const result = await QuizResult.findOne({ quiz: quizId, student: studentId });
-    if (!result) return res.status(404).json({ message: "Cavab tapılmadı" });
+    if (!result) return res.status(404).json();
 
     const details = quiz.questions.map((q, idx) => {
       const a = result.answers.find(a => a.questionIndex === idx);
@@ -230,9 +211,10 @@ export const getQuizDetailsForStudent = async (req, res) => {
       answers: details,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };
+
 export const getHomeworkBySubject = async (req, res) => {
   try {
     const studentId = req.user.id;
@@ -243,6 +225,7 @@ export const getHomeworkBySubject = async (req, res) => {
       "records.student": studentId,
       "records.homework.file": { $ne: "" }
     }).sort({ date: -1 });
+
     const homeworks = journals.map(j => {
       const r = j.records.find(r => r.student.toString() === studentId);
       return {
@@ -252,8 +235,9 @@ export const getHomeworkBySubject = async (req, res) => {
         fileUrl: r.homework.file
       };
     });
+
     res.status(200).json({ subject: subjectName, homeworks });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useAuth } from "../context/AuthContext"; // yolu uyğun olaraq düzəlt
+import { useAuth } from "../context/AuthContext"; 
 import "./LoginPage.css";
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -44,14 +45,14 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="login-left">
         <img
-          src="../../public/planets/code.jpg"
+          src="../../public/login.jpg"
           alt="Login Illustration"
           className="illustration-img"
         />
       </div>
       <div className="login-right">
         <img
-          src=""
+          src="../../public/logo.jpg"
           alt="EduVerse Logo"
           className="logo-img"
         />
@@ -88,12 +89,12 @@ const LoginPage = () => {
 
         <div className="alt-login">
           <hr />
-          <span>və ya</span>
+         
           <hr />
         </div>
 
         <div className="login-options">
-          {/* Google və Apple login gələcəkdə buraya əlavə oluna bilər */}
+        
         </div>
       </div>
     </div>

@@ -56,7 +56,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Mouse hover zamanı öz ətrafında 360° fırlanma */
+
 .imageWrapper:hover .image {
   animation: rotatePlanet 3s linear infinite;
 }

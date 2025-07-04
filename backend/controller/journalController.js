@@ -338,10 +338,10 @@ export const addBSQScore = async (req, res) => {
 
     const grade = getGradeFromScore(score);
 
-    // BSQ-ni təyin et
+    
     record[term].bsq = { score, grade };
 
-    // Əgər artıq summativ ortalama mövcuddursa, ortalama + bsq ilə yeni nəticə çıxar
+    
     const termAvg = record[term].average;
     if (termAvg && score) {
       const weighted = Math.round(termAvg * 0.4 + score * 0.6);
@@ -380,7 +380,7 @@ export const createJournal = async (req, res) => {
         attendance: null,
         term1: {
           summatives: Array.isArray(prevRecord?.term1?.summatives)
-            ? prevRecord.term1.summatives.map(s => ({ ...s }))  // 🛠 Dərin kopya
+            ? prevRecord.term1.summatives.map(s => ({ ...s })) 
             : [],
           bsq: {
             score: prevRecord?.term1?.bsq?.score ?? null,
@@ -391,7 +391,7 @@ export const createJournal = async (req, res) => {
         },
         term2: {
           summatives: Array.isArray(prevRecord?.term2?.summatives)
-            ? prevRecord.term2.summatives.map(s => ({ ...s }))  // 🛠 Dərin kopya
+            ? prevRecord.term2.summatives.map(s => ({ ...s }))  
             : [],
           bsq: {
             score: prevRecord?.term2?.bsq?.score ?? null,

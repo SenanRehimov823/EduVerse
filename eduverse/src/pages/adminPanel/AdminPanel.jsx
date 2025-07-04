@@ -24,7 +24,7 @@ const AdminPanel = () => {
 
   return (
     <div className="panelContainer">
-      {/* Sol menyu */}
+  
       <nav className="sidebar">
         <div className="profileBox">
           <FaUsers className="profileIcon" />
@@ -37,7 +37,7 @@ const AdminPanel = () => {
           </span>
         </div>
 
-        {/* Dashboard linki */}
+     
         <NavLink
           to="/admin"
           end
@@ -68,7 +68,7 @@ const AdminPanel = () => {
         </button>
       </nav>
 
-      {/* Sağ content sahəsi */}
+     
       <main className="content">
         <h1>Admin Paneli</h1>
 

@@ -12,7 +12,7 @@ const JournalTable = () => {
   const [lessons, setLessons] = useState([]);
   const [selected, setSelected] = useState({ subject: "", className: "", date: "" });
   const [journal, setJournal] = useState(null);
-  const [topicInput, setTopicInput] = useState(""); // 🆕 mövzu üçün input state
+  const [topicInput, setTopicInput] = useState(""); 
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
 
@@ -46,7 +46,7 @@ const JournalTable = () => {
           { withCredentials: true }
         );
         setJournal(res.data.journal);
-        setTopicInput(res.data.journal.topic || ""); // 🆕 inputu mövcud mövzu ilə doldur
+        setTopicInput(res.data.journal.topic || ""); 
         setError("");
       } catch {
         setJournal(null);
@@ -87,7 +87,7 @@ const JournalTable = () => {
         { withCredentials: true }
       );
       alert("Mövzu yeniləndi");
-      setTopicInput(""); // 🆕 inputu boşalt
+      setTopicInput(""); 
       setRefetch(!refetch);
     } catch (err) {
       alert("Xəta baş verdi: Mövzu dəyişmədi");

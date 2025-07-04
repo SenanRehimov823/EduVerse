@@ -76,15 +76,15 @@ const Router = () => {
           </Route>
         </Route>
 
-        {/* Admin route - sadəcə adminlərə */}
-        {/* <Route
+       
+        <Route
           path="/admin"
           element={
             <ProtectedRoute user={user} requiredRole="admin">
               <AdminPanel />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -37,7 +37,7 @@ const Header = () => {
       <div className={styles.container}>
         <div className={styles.headerContent}>
           <div className={styles.logo}>
-            <h1 className={styles.logoText}>EduVerse</h1>
+            <a href="/" className={styles.logoText}>EduVerse</a>
           </div>
 
           <div className={styles.authButtons}>

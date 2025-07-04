@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-/* Sidebar - normal ekranlar */
+
 .sidebar {
   position: fixed;
   top: 65px;
@@ -35,7 +35,7 @@
 .profileIcon {
   font-size: 24px;
   margin-right: 10px;
-  color: #2563eb; /* mavi, admin üçün də uyğun */
+  color: #2563eb; 
 }
 
 .profileName {
@@ -95,7 +95,7 @@
   background-color: #dc2626;
 }
 
-/* Main content - full area */
+
 .content {
   width: 100%;
   margin-left: 250px;
@@ -110,8 +110,8 @@
   margin: 20px 0;
 }
 
-/* Responsive for mobile */
-/* @media (max-width: 768px) {
+
+ @media (max-width: 768px) {
   .panelContainer {
     flex-direction: column;
   }
@@ -143,4 +143,4 @@
   .content {
     padding: 10px;
   }
-} */
+} 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./ManageSubjectsSection.module.css"; // ✅ Modul CSS importu
+import styles from "./ManageSubjectsSection.module.css"; 
 
 const ManageSubjectsSection = () => {
   const [subjectName, setSubjectName] = useState("");

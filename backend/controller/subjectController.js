@@ -8,13 +8,13 @@ export const createSubject = async (req, res) => {
       return res.status(400).json({ message: "Fənn və müəllim seçilməlidir" });
     }
 
-    // Müəllim mövcuddurmu?
+
     const teacher = await User.findById(teacherId);
     if (!teacher || teacher.role !== "teacher") {
       return res.status(404).json({ message: "Müəllim tapılmadı" });
     }
 
-    // Mövcud fənn varsa müəllimi yenilə, yoxsa yarat
+
     let subject = await Subject.findOne({ name: subjectName });
 
     if (!subject) {
@@ -41,7 +41,7 @@ export const createSubject = async (req, res) => {
 export const getSubjects = async (req, res) => {
   try {
     const subjects = await Subject.find().sort("name");
-    res.status(200).json({ subjects }); // <-- düzəliş burada
+    res.status(200).json({ subjects }); 
   } catch (err) {
     res.status(500).json({ message: "Xəta baş verdi" });
   }

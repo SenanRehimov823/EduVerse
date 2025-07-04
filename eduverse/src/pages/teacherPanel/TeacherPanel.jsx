@@ -12,7 +12,7 @@ import MergedChatPage from "../../pages/teacherPanel/MergedChatPage";
 import CreateQuizPage from "../../pages/teacherPanel/CreateQuizPage";
 import JournalPage from "../../pages/teacherPanel/JournalPage";
 import QuizListPage from "../../pages/teacherPanel/QuizListPage";
-import StudentProfile from "../../pages/studentPanel/StudentProfile"; // profil olaraq istifadə olunur
+import StudentProfile from "../../pages/studentPanel/StudentProfile"; 
 import { useAuth } from "../../context/AuthContext";
 import styles from "./TeacherPanel.module.css";
 
@@ -32,7 +32,7 @@ const TeacherPanel = () => {
       case "chat":
         return <MergedChatPage />;
       case "profile":
-        return <StudentProfile />; // hazır profil komponentindən istifadə
+        return <StudentProfile />; 
       default:
         return <JournalPage />;
     }

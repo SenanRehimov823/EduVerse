@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./ClassCards.module.css"; // ✅ CSS modulu əlavə olundu
+import styles from "./ClassCards.module.css"; 
 
 const ClassCards = () => {
   const [classes, setClasses] = useState([]);

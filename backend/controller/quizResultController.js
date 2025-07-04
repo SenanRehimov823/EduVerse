@@ -3,26 +3,21 @@ import QuizResult from "../model/quizResult.js";
 import Class from "../model/class.js";
 import User from "../model/user.js";
 
-
-
 export const submitQuiz = async (req, res) => {
   try {
     const studentId = req.user.id;
     const { quizId, answers } = req.body;
 
-    console.log("📩 Gələn quizId:", quizId);
-    console.log("📥 Gələn cavablar:", answers);
-
     const quiz = await Quiz.findById(quizId);
-    if (!quiz) return res.status(404).json({ message: "Quiz tapılmadı" });
+    if (!quiz) return res.status(404).json();
 
     const now = Date.now();
     if (quiz.deadline && now > new Date(quiz.deadline)) {
-      return res.status(400).json({ message: "Vaxt bitib. Quiz artıq təqdim edilə bilməz." });
+      return res.status(400).json();
     }
 
     const existing = await QuizResult.findOne({ quiz: quizId, student: studentId });
-    if (existing) return res.status(400).json({ message: "Artıq təqdim etmisiniz" });
+    if (existing) return res.status(400).json();
 
     let score = 0;
 
@@ -38,12 +33,9 @@ export const submitQuiz = async (req, res) => {
         question: q.question,
         questionIndex: idx,
         selectedOptions: selected,
-        correctAnswers: correct, // ✅ Bunu əlavə edirik!
+        correctAnswers: correct
       };
     });
-
-    console.log("✅ Yekun bal:", score);
-    console.log("📊 Cavab xəritəsi:", answerMapping);
 
     const result = await QuizResult.create({
       quiz: quizId,
@@ -53,43 +45,26 @@ export const submitQuiz = async (req, res) => {
       startTime: Date.now()
     });
 
-    res.status(201).json({ message: "Quiz təqdim edildi", result });
+    res.status(201).json({ result });
   } catch (error) {
-    console.error("❌ Server xətası:", error);
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };
-
 
 export const getResultsByQuizIdForTeacher = async (req, res) => {
   try {
     const { quizId } = req.params;
     const teacherId = req.user.id;
 
-    console.log("🧑‍🏫 teacherId from token:", teacherId);
-    console.log("📩 Requested quizId:", quizId);
-
     const quiz = await Quiz.findById(quizId);
-    if (!quiz) {
-      console.log("❌ Quiz tapılmadı:", quizId);
-      return res.status(404).json({ message: "Quiz tapılmadı" });
-    }
-
-    console.log("📌 quiz.teacher:", quiz.teacher);
-    console.log("📌 String(quiz.teacher):", String(quiz.teacher));
-    console.log("📌 String(teacherId):", String(teacherId));
-    console.log("📌 Eynilik yoxlanışı:", String(quiz.teacher) === String(teacherId));
+    if (!quiz) return res.status(404).json();
 
     if (String(quiz.teacher) !== String(teacherId)) {
-      console.log("❌ Bu quiz bu müəllimə aid deyil!");
-      return res.status(403).json({ message: "Bu quiz sizin deyil" });
+      return res.status(403).json();
     }
 
     const classObj = await Class.findById(quiz.classId).populate("students", "name");
-    if (!classObj) {
-      console.log("❌ Sinif tapılmadı:", quiz.classId);
-      return res.status(404).json({ message: "Sinif tapılmadı" });
-    }
+    if (!classObj) return res.status(404).json();
 
     const allResults = await QuizResult.find({ quiz: quizId }).populate("student", "name");
 
@@ -115,18 +90,16 @@ export const getResultsByQuizIdForTeacher = async (req, res) => {
       results
     });
   } catch (err) {
-    console.error("❌ SERVER ERROR:", err);
-    res.status(500).json({ message: "Server xətası", error: err.message });
+    res.status(500).json();
   }
 };
-
 
 export const getQuizStats = async (req, res) => {
   try {
     const { quizId } = req.params;
 
     const quiz = await Quiz.findById(quizId);
-    if (!quiz) return res.status(404).json({ message: "Quiz tapılmadı" });
+    if (!quiz) return res.status(404).json();
 
     const results = await QuizResult.find({ quiz: quizId }).populate("student", "name");
 
@@ -145,7 +118,7 @@ export const getQuizStats = async (req, res) => {
       } : null
     });
   } catch (error) {
-    res.status(500).json({ message: "Xəta baş verdi", error: error.message });
+    res.status(500).json();
   }
 };
 
@@ -155,12 +128,10 @@ export const getQuizDetailsForStudent = async (req, res) => {
     const { quizId } = req.params;
 
     const quiz = await Quiz.findById(quizId).populate("teacher", "name");
-    if (!quiz) return res.status(404).json({ message: "Quiz tapılmadı" });
+    if (!quiz) return res.status(404).json();
 
     const result = await QuizResult.findOne({ quiz: quizId, student: studentId });
-    if (!result) {
-      return res.status(404).json({ message: "Siz bu quizə cavab verməmisiniz" });
-    }
+    if (!result) return res.status(404).json();
 
     const answers = quiz.questions.map((q, idx) => {
       const submitted = result.answers.find(a => a.questionIndex === idx);
@@ -179,17 +150,16 @@ export const getQuizDetailsForStudent = async (req, res) => {
       answers
     });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };
+
 export const getActiveQuizzesForStudent = async (req, res) => {
   try {
     const studentId = req.user.id;
 
     const student = await User.findById(studentId).populate("class", "_id");
-    if (!student || !student.class) {
-      return res.status(404).json({ message: "Sinif tapılmadı" });
-    }
+    if (!student || !student.class) return res.status(404).json();
 
     const allQuizzes = await Quiz.find({
       classId: student.class._id,
@@ -212,6 +182,6 @@ export const getActiveQuizzesForStudent = async (req, res) => {
 
     res.status(200).json({ activeQuizzes });
   } catch (error) {
-    res.status(500).json({ message: "Server xətası", error: error.message });
+    res.status(500).json();
   }
 };

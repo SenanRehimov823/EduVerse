@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import styles from "./BulkRoleAssignSection.module.css"; // 💡 Stil əlavə olundu
+import styles from "./BulkRoleAssignSection.module.css"; 
 
 const BulkRoleAssignSection = () => {
   const [pendingUsers, setPendingUsers] = useState([]);

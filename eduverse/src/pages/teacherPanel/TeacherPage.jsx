@@ -12,14 +12,14 @@ const TeacherPage = () => {
   const [myLessons, setMyLessons] = useState([]);
   const [userRole, setUserRole] = useState("");
 
-  // İstifadəçi məlumatını yüklə (rol üçün)
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/auth/me", {
           withCredentials: true,
         });
-        setUserRole(res.data.user.role); // düzəldilmiş hissə
+        setUserRole(res.data.user.role); 
       } catch (err) {
         console.error("İstifadəçi məlumatı tapılmadı");
       }
@@ -63,7 +63,7 @@ const TeacherPage = () => {
     fetchTeachers();
   }, [subjectId]);
 
-  // Müəllimin və ya adminin dərslərini yüklə
+
   useEffect(() => {
     const fetchLessons = async () => {
       if (!userRole) return;
